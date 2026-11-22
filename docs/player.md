@@ -21,6 +21,8 @@ Settings → Castlist features → **Player background** picks how the player ta
 - **Blurred artwork**: the artwork itself, blurred and faded behind everything. Needs Android 12 or later; older phones get the gradient.
 - **Theme colour**: the plain app background.
 
+![Gradient, solid and blurred backgrounds in dark mode](images/player-backgrounds.png)
+
 **Tint controls with cover colour** (on by default) gives the play button and progress bar a colour from the artwork. When that colour would be hard to see, the player lightens or darkens it, or falls back to the app's accent colour.
 
 Prefer the original player? Switch back any time in Settings → Castlist features → **Player style → Classic**. The background settings only apply to the modern player.

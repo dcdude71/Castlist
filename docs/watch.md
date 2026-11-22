@@ -1,5 +1,7 @@
 # Watch
 
+> **Experimental.** The watch app is provided as is and is not supported. Installing it means sideloading an APK onto the watch over wireless debugging ([see below](#installing-the-watch-app)), which is fiddly and can break with watch or phone updates. If it doesn't work for you, I can't help you set it up or fix it. The phone app works the same with or without it.
+
 Castlist has a companion app for Wear OS watches (Galaxy Watch, Pixel Watch and others). It is a **remote control**: the phone does the playing, the watch starts and controls it.
 
 ## What it does
