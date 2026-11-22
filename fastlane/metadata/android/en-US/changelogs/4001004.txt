@@ -1,0 +1,1 @@
+Fast-forward time per podcast replaces Skip ad: one setting, used everywhere (player, lock screen, headphones, Android Auto, watch); old ad skip times carry over. Modern player: centred titles and a background from the artwork (gradient, solid colour or blurred), with cover-coloured controls. Update both the phone and watch apps.
