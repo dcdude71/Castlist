@@ -13,8 +13,8 @@ The icon shows the kind everywhere a playlist appears: the Playlists tab, the to
 
 1. Open the **Playlists** tab and tap **+**. Choose **Smart playlist** and give it a name. (The kind can't be changed later.)
 2. Open the playlist and tap the **pencil** (Edit rules).
-3. Tap **Add podcast**, choose a podcast and set its rule (below).
-4. Add more podcasts the same way. Drag a rule to reorder it, swipe it away to remove it.
+3. Tap **Add podcast** (**+**), tick one or more podcasts, tap **Next** and set the rule (below). When you pick several podcasts, each one gets its own copy of that rule, which you can change afterwards.
+4. Add more podcasts the same way. Podcasts already in the playlist are left out of the list; tap **Show added** to see them too, for example to give a podcast a second rule. Drag a rule to reorder it, swipe it away to remove it.
 
 The Playlists tab shows, for each playlist, how many podcasts and episodes it holds and how much listening time is left ("2 podcasts · 5 episodes · 3 h 10 min left"). Time left counts only what is still unheard in partly played episodes.
 

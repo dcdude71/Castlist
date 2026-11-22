@@ -49,6 +49,8 @@ Phases:
 4. Auto-download and cleanup protection: done
 5. Android Auto: done, tested in a car on 2026-11-19 (Playlists folder, playlist playback). Sideloaded installs (GitHub, Obtainium, F-Droid) need Android Auto's developer setting "Unknown sources" to show the app. A "Playlists" folder appears after "Continue listening" when at least one playlist has "Show in Android Auto" ticked (playlist screen ⋮ menu; on by default for new playlists, off for existing ones). Starting an episode from it starts playlist playback. Code: `PlaylistMediaLibrary` plus small hooks in `MediaLibrarySessionCallback`.
 
+- Podcast picker (Edit rules → +), since v0.10.5 after a Reddit request: multi-select; podcasts already in the playlist are hidden until "Show added (N)" (they stay selectable, a podcast can have several rules). Several picks open one `PlaylistRuleDialog` and each podcast gets a copy of the rule (`PlaylistRulesFragment.showPodcastPicker`).
+
 ## Manual playlists
 Added in v0.10.0 (designed 2026-11-20, mockups: https://claude.ai/artifact/DjXtvtMi6k417dMAkU4HsU). The queue stays untouched; manual playlists only add to it.
 - Data: `Playlists.manual` and `Playlists.keep_played` columns, fork table `PlaylistEpisodes (playlist, item, position)`. `PlaylistReader.getEpisodes` returns the hand-picked list for a manual playlist, so the widget, Android Auto and the player line work unchanged. Played episodes drop off unless "Keep played episodes" is on (they stay in the table, filtered on read).

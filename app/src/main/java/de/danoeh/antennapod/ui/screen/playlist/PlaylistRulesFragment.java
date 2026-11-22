@@ -1,6 +1,7 @@
 package de.danoeh.antennapod.ui.screen.playlist;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
@@ -29,9 +31,12 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import de.danoeh.antennapod.R;
 import de.danoeh.antennapod.activity.MainActivity;
@@ -173,27 +178,89 @@ public class PlaylistRulesFragment extends Fragment implements Toolbar.OnMenuIte
     }
 
     private void showPodcastPicker() {
-        List<Feed> subscribed = new ArrayList<>();
+        showPodcastPicker(false, new HashSet<>());
+    }
+
+    /**
+     * Podcasts not yet in the playlist come first; the ones already added are shown on request
+     * (a podcast can have several rules). Several podcasts can be picked to get the same rule.
+     */
+    private void showPodcastPicker(boolean includeAdded, @NonNull Set<Long> checked) {
+        Set<Long> inPlaylist = new HashSet<>();
+        for (PlaylistRule rule : adapter.getItems()) {
+            inPlaylist.add(rule.getFeedId());
+        }
+        List<Feed> available = new ArrayList<>();
+        List<Feed> added = new ArrayList<>();
         for (Feed feed : feeds.values()) {
             if (feed.getState() == Feed.STATE_SUBSCRIBED) {
-                subscribed.add(feed);
+                (inPlaylist.contains(feed.getId()) ? added : available).add(feed);
             }
         }
-        Collections.sort(subscribed, (a, b) -> String.CASE_INSENSITIVE_ORDER.compare(
-                String.valueOf(a.getTitle()), String.valueOf(b.getTitle())));
-        String[] titles = new String[subscribed.size()];
-        for (int i = 0; i < subscribed.size(); i++) {
-            titles[i] = subscribed.get(i).getTitle();
+        if (available.isEmpty() && added.isEmpty()) {
+            return;
         }
-        new MaterialAlertDialogBuilder(requireContext())
+        if (available.isEmpty()) {
+            includeAdded = true;
+        }
+        Comparator<Feed> byTitle = (a, b) -> String.CASE_INSENSITIVE_ORDER.compare(
+                String.valueOf(a.getTitle()), String.valueOf(b.getTitle()));
+        Collections.sort(available, byTitle);
+        Collections.sort(added, byTitle);
+        List<Feed> shown = new ArrayList<>(available);
+        if (includeAdded) {
+            shown.addAll(added);
+        }
+        String[] titles = new String[shown.size()];
+        boolean[] checkedItems = new boolean[shown.size()];
+        for (int i = 0; i < shown.size(); i++) {
+            Feed feed = shown.get(i);
+            titles[i] = inPlaylist.contains(feed.getId())
+                    ? getString(R.string.playlist_podcast_already_added, feed.getTitle()) : feed.getTitle();
+            checkedItems[i] = checked.contains(feed.getId());
+        }
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext())
                 .setTitle(R.string.playlist_choose_podcast)
-                .setItems(titles, (dialog, which) -> {
-                    Feed feed = subscribed.get(which);
-                    PlaylistRuleDialog.show(requireContext(), feed.getTitle(),
-                            new PlaylistRule(playlistId, feed.getId()), autoDownload, PlaylistWriter::addRule);
+                .setMultiChoiceItems(titles, checkedItems, (dialog, which, isChecked) -> {
+                    if (isChecked) {
+                        checked.add(shown.get(which).getId());
+                    } else {
+                        checked.remove(shown.get(which).getId());
+                    }
+                    ((AlertDialog) dialog)
+                            .getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(!checked.isEmpty());
                 })
-                .setNegativeButton(R.string.cancel_label, null)
-                .show();
+                .setPositiveButton(R.string.playlist_choose_podcast_next, (dialog, which) -> {
+                    List<Feed> selected = new ArrayList<>();
+                    for (Feed feed : shown) {
+                        if (checked.contains(feed.getId())) {
+                            selected.add(feed);
+                        }
+                    }
+                    showRuleDialogFor(selected);
+                })
+                .setNegativeButton(R.string.cancel_label, null);
+        if (!includeAdded && !added.isEmpty()) {
+            builder.setNeutralButton(getString(R.string.playlist_show_added_podcasts, added.size()),
+                    (dialog, which) -> showPodcastPicker(true, checked));
+        }
+        AlertDialog dialog = builder.show();
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(!checked.isEmpty());
+    }
+
+    private void showRuleDialogFor(@NonNull List<Feed> selected) {
+        if (selected.isEmpty()) {
+            return;
+        }
+        String title = selected.size() == 1 ? selected.get(0).getTitle()
+                : getResources().getQuantityString(R.plurals.playlist_num_podcasts, selected.size(), selected.size());
+        PlaylistRuleDialog.show(requireContext(), title, new PlaylistRule(playlistId, selected.get(0).getId()),
+                autoDownload, rule -> {
+                    for (Feed feed : selected) {
+                        PlaylistWriter.addRule(new PlaylistRule(0, playlistId, feed.getId(), rule.getEpisodeCount(),
+                                rule.getPickFrom(), rule.getPlayOrder(), rule.getPriority(), 0));
+                    }
+                });
     }
 
     private class RuleAdapter extends ReorderableListAdapter<PlaylistRule> {
