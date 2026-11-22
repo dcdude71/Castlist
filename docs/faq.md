@@ -4,7 +4,7 @@
 A **smart** playlist (✦) picks its episodes from rules and keeps itself up to date. A **manual** playlist (≡) holds the episodes you add yourself, in your order, like an extra queue. The kind is chosen when you create the playlist; a smart playlist can be copied into a manual one. See [Playlists](playlists.md#manual-playlists).
 
 ### Can I have a playlist of all new episodes from a set of podcasts?
-Yes. Add one rule per podcast with **All unplayed episodes**, give them all the same priority, and pick **Newest first** or **Oldest first** as the play order. The playlist updates itself as episodes come in and as you finish them. See [Playlists](playlists.md#rules).
+Yes. In Edit rules, tap **+**, tick all the podcasts at once and choose **All unplayed episodes**: each podcast gets the same rule with the same priority, and the play order you pick (**Newest first** or **Oldest first**). The playlist updates itself as episodes come in and as you finish them. See [Playlists](playlists.md#rules).
 
 ### If I set "3 oldest episodes" and listen to them, do the next 3 get added?
 Yes. Rules are not a snapshot: "3 oldest unplayed" always means the 3 oldest episodes you have not played yet. Finish one, and the next one moves in.
