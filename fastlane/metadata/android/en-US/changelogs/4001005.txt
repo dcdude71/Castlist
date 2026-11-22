@@ -1,0 +1,1 @@
+Playlist rules: pick several podcasts at once and give them the same rule. Podcasts already in the playlist are hidden (tap Show added to see them). With 10 or more subscriptions, a search field filters the list.
