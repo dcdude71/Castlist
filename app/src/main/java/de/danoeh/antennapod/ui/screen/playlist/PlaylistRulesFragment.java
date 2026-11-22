@@ -2,12 +2,16 @@ package de.danoeh.antennapod.ui.screen.playlist;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -41,6 +45,8 @@ import java.util.Set;
 import de.danoeh.antennapod.R;
 import de.danoeh.antennapod.activity.MainActivity;
 import de.danoeh.antennapod.event.PlaylistEvent;
+import de.danoeh.antennapod.databinding.PlaylistPodcastPickerBinding;
+import de.danoeh.antennapod.model.feed.EpisodeCondition;
 import de.danoeh.antennapod.model.feed.Feed;
 import de.danoeh.antennapod.model.playlist.Playlist;
 import de.danoeh.antennapod.model.playlist.PlaylistRule;
@@ -58,6 +64,7 @@ public class PlaylistRulesFragment extends Fragment implements Toolbar.OnMenuIte
     public static final String TAG = "PlaylistRulesFragment";
     private static final String ARG_PLAYLIST_ID = "playlist_id";
 
+    private static final int SEARCH_MIN_PODCASTS = 10;
     private long playlistId;
     private RuleAdapter adapter;
     private EmptyViewHandler emptyView;
@@ -178,14 +185,15 @@ public class PlaylistRulesFragment extends Fragment implements Toolbar.OnMenuIte
     }
 
     private void showPodcastPicker() {
-        showPodcastPicker(false, new HashSet<>());
+        showPodcastPicker(false, new HashSet<>(), "");
     }
 
     /**
      * Podcasts not yet in the playlist come first; the ones already added are shown on request
      * (a podcast can have several rules). Several podcasts can be picked to get the same rule.
+     * With many subscriptions, a search field filters the list (ignoring case and accents).
      */
-    private void showPodcastPicker(boolean includeAdded, @NonNull Set<Long> checked) {
+    private void showPodcastPicker(boolean includeAdded, @NonNull Set<Long> checked, @NonNull String query) {
         Set<Long> inPlaylist = new HashSet<>();
         for (PlaylistRule rule : adapter.getItems()) {
             inPlaylist.add(rule.getFeedId());
@@ -207,32 +215,74 @@ public class PlaylistRulesFragment extends Fragment implements Toolbar.OnMenuIte
                 String.valueOf(a.getTitle()), String.valueOf(b.getTitle()));
         Collections.sort(available, byTitle);
         Collections.sort(added, byTitle);
-        List<Feed> shown = new ArrayList<>(available);
+        List<Feed> all = new ArrayList<>(available);
         if (includeAdded) {
-            shown.addAll(added);
+            all.addAll(added);
         }
-        String[] titles = new String[shown.size()];
-        boolean[] checkedItems = new boolean[shown.size()];
-        for (int i = 0; i < shown.size(); i++) {
-            Feed feed = shown.get(i);
-            titles[i] = inPlaylist.contains(feed.getId())
-                    ? getString(R.string.playlist_podcast_already_added, feed.getTitle()) : feed.getTitle();
-            checkedItems[i] = checked.contains(feed.getId());
-        }
+
+        PlaylistPodcastPickerBinding binding = PlaylistPodcastPickerBinding.inflate(getLayoutInflater());
+        binding.podcastSearchLayout.setVisibility(available.size() + added.size() >= SEARCH_MIN_PODCASTS
+                ? View.VISIBLE : View.GONE);
+        List<Feed> shown = new ArrayList<>();
+        ArrayAdapter<String> listAdapter = new ArrayAdapter<>(requireContext(),
+                com.google.android.material.R.layout.mtrl_alert_select_dialog_multichoice, new ArrayList<>());
+        binding.podcastList.setAdapter(listAdapter);
+
+        AlertDialog[] dialogRef = new AlertDialog[1];
+        Runnable updatePositive = () -> {
+            if (dialogRef[0] != null) {
+                dialogRef[0].getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(!checked.isEmpty());
+            }
+        };
+        Runnable filter = () -> {
+            String needle = EpisodeCondition.normalize(String.valueOf(binding.podcastSearch.getText())).trim();
+            shown.clear();
+            listAdapter.clear();
+            for (Feed feed : all) {
+                if (needle.isEmpty() || EpisodeCondition.normalize(feed.getTitle()).contains(needle)) {
+                    shown.add(feed);
+                    listAdapter.add(inPlaylist.contains(feed.getId())
+                            ? getString(R.string.playlist_podcast_already_added, feed.getTitle()) : feed.getTitle());
+                }
+            }
+            listAdapter.notifyDataSetChanged();
+            for (int i = 0; i < shown.size(); i++) {
+                binding.podcastList.setItemChecked(i, checked.contains(shown.get(i).getId()));
+            }
+            binding.podcastSearchEmpty.setVisibility(shown.isEmpty() ? View.VISIBLE : View.GONE);
+        };
+        binding.podcastList.setOnItemClickListener((parent, view, position, id) -> {
+            long feedId = shown.get(position).getId();
+            if (binding.podcastList.isItemChecked(position)) {
+                checked.add(feedId);
+            } else {
+                checked.remove(feedId);
+            }
+            updatePositive.run();
+        });
+        binding.podcastSearch.setText(query);
+        binding.podcastSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence text, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence text, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable text) {
+                filter.run();
+            }
+        });
+        filter.run();
+
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext())
                 .setTitle(R.string.playlist_choose_podcast)
-                .setMultiChoiceItems(titles, checkedItems, (dialog, which, isChecked) -> {
-                    if (isChecked) {
-                        checked.add(shown.get(which).getId());
-                    } else {
-                        checked.remove(shown.get(which).getId());
-                    }
-                    ((AlertDialog) dialog)
-                            .getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(!checked.isEmpty());
-                })
+                .setView(binding.getRoot())
                 .setPositiveButton(R.string.playlist_choose_podcast_next, (dialog, which) -> {
                     List<Feed> selected = new ArrayList<>();
-                    for (Feed feed : shown) {
+                    for (Feed feed : all) {
                         if (checked.contains(feed.getId())) {
                             selected.add(feed);
                         }
@@ -242,10 +292,17 @@ public class PlaylistRulesFragment extends Fragment implements Toolbar.OnMenuIte
                 .setNegativeButton(R.string.cancel_label, null);
         if (!includeAdded && !added.isEmpty()) {
             builder.setNeutralButton(getString(R.string.playlist_show_added_podcasts, added.size()),
-                    (dialog, which) -> showPodcastPicker(true, checked));
+                    (dialog, which) -> showPodcastPicker(true, checked,
+                            String.valueOf(binding.podcastSearch.getText())));
         }
-        AlertDialog dialog = builder.show();
-        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(!checked.isEmpty());
+        AlertDialog dialog = builder.create();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+                    | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        }
+        dialogRef[0] = dialog;
+        dialog.show();
+        updatePositive.run();
     }
 
     private void showRuleDialogFor(@NonNull List<Feed> selected) {

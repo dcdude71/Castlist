@@ -1107,6 +1107,8 @@
     <string name="playlist_add_podcast">Add podcast</string>
     <string name="playlist_choose_podcast">Choose podcasts</string>
     <string name="playlist_choose_podcast_next">Next</string>
+    <string name="playlist_search_podcasts">Search podcasts</string>
+    <string name="playlist_search_podcasts_none">No podcast matches</string>
     <string name="playlist_show_added_podcasts">Show added (%d)</string>
     <string name="playlist_podcast_already_added">%1$s (already added)</string>
     <string name="playlist_rule_episodes">Episodes</string>
