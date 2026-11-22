@@ -70,7 +70,9 @@ final class PlaylistLine {
         line.setId(R.id.playlistLine);
         line.setGravity(binding.txtvPodcastTitle.getGravity());
         line.setTextSize(TypedValue.COMPLEX_UNIT_PX, binding.txtvPodcastTitle.getTextSize());
-        line.setTextColor(ThemeUtils.getColorFromAttr(context, androidx.appcompat.R.attr.colorPrimary));
+        PlayerBackground.Colors colors = PlayerBackground.currentColors();
+        line.setTextColor(colors != null && colors.accent != null ? colors.accent
+                : ThemeUtils.getColorFromAttr(context, androidx.appcompat.R.attr.colorPrimary));
         line.setSingleLine(true);
         line.setEllipsize(TextUtils.TruncateAt.END);
         line.setVisibility(View.GONE);

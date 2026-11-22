@@ -38,7 +38,7 @@ import de.danoeh.antennapod.model.feed.VolumeAdaptionSetting;
 import de.danoeh.antennapod.net.download.serviceinterface.FeedUpdateManager;
 import de.danoeh.antennapod.storage.database.DBReader;
 import de.danoeh.antennapod.storage.database.DBWriter;
-import de.danoeh.antennapod.storage.database.FeedAdSkip;
+import de.danoeh.antennapod.storage.database.FeedSkipForward;
 import de.danoeh.antennapod.storage.database.FeedDatabaseWriter;
 import de.danoeh.antennapod.storage.preferences.EpisodeFilterPreferences;
 import de.danoeh.antennapod.storage.preferences.UserPreferences;
@@ -68,7 +68,7 @@ public class FeedSettingsPreferenceFragment extends PreferenceFragmentCompat {
     private static final String PREF_NEW_EPISODES_ACTION = "feedNewEpisodesAction";
     private static final String PREF_FEED_PLAYBACK_SPEED = "feedPlaybackSpeed";
     private static final String PREF_AUTO_SKIP = "feedAutoSkip";
-    private static final String PREF_AD_SKIP = "feedAdSkip";
+    private static final String PREF_SKIP_FORWARD = "feedSkipForward";
     private static final String PREF_NOTIFICATION = "episodeNotification";
     private static final String PREF_RENAME = "rename";
     private static final String PREF_TAGS = "tags";
@@ -78,7 +78,7 @@ public class FeedSettingsPreferenceFragment extends PreferenceFragmentCompat {
     private Feed feed;
     private Disposable disposable;
     private FeedPreferences feedPreferences;
-    private int adSkipSeconds;
+    private int skipForwardSeconds;
 
     public static FeedSettingsPreferenceFragment newInstance(long feedId) {
         FeedSettingsPreferenceFragment fragment = new FeedSettingsPreferenceFragment();
@@ -129,7 +129,7 @@ public class FeedSettingsPreferenceFragment extends PreferenceFragmentCompat {
         long feedId = getArguments().getLong(EXTRA_FEED_ID);
         disposable = Maybe.create((MaybeOnSubscribe<Feed>) emitter -> {
             Feed feed = DBReader.getFeed(feedId, false, 0, 0);
-            adSkipSeconds = FeedAdSkip.getSeconds(feedId);
+            skipForwardSeconds = FeedSkipForward.getSeconds(feedId);
             if (feed != null) {
                 emitter.onSuccess(feed);
             } else {
@@ -146,7 +146,7 @@ public class FeedSettingsPreferenceFragment extends PreferenceFragmentCompat {
                     updateAutoDeleteSummary();
                     updateAutoDownloadEnabledSummary();
                     updateNewEpisodesActionSummary();
-                    updateAdSkipSummary();
+                    updateSkipForwardSummary();
 
                     findPreference(PREF_RECONNECT_LOCAL_FOLDER).setVisible(feed.isLocalFeed());
                     if (feed.isLocalFeed()) {
@@ -168,13 +168,14 @@ public class FeedSettingsPreferenceFragment extends PreferenceFragmentCompat {
         }
     }
 
-    private void updateAdSkipSummary() {
-        Preference preference = findPreference(PREF_AD_SKIP);
-        if (adSkipSeconds > 0) {
+    private void updateSkipForwardSummary() {
+        Preference preference = findPreference(PREF_SKIP_FORWARD);
+        if (skipForwardSeconds > 0) {
             preference.setSummary(getResources().getQuantityString(
-                    R.plurals.time_seconds_quantified, adSkipSeconds, adSkipSeconds));
+                    R.plurals.time_seconds_quantified, skipForwardSeconds, skipForwardSeconds));
         } else {
-            preference.setSummary(R.string.feed_ad_skip_off);
+            preference.setSummary(getString(R.string.feed_skip_forward_global,
+                    UserPreferences.getFastForwardSecs()));
         }
     }
 
@@ -194,10 +195,10 @@ public class FeedSettingsPreferenceFragment extends PreferenceFragmentCompat {
             }.show();
             return false;
         });
-        findPreference(PREF_AD_SKIP).setOnPreferenceClickListener(preference -> {
-            FeedAdSkipDialog.show(getContext(), feed.getId(), adSkipSeconds, seconds -> {
-                adSkipSeconds = seconds;
-                updateAdSkipSummary();
+        findPreference(PREF_SKIP_FORWARD).setOnPreferenceClickListener(preference -> {
+            FeedSkipForwardDialog.show(getContext(), feed.getId(), skipForwardSeconds, seconds -> {
+                skipForwardSeconds = seconds;
+                updateSkipForwardSummary();
             });
             return false;
         });

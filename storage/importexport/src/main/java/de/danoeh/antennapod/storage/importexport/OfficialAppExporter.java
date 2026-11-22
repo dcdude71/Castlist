@@ -18,7 +18,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import de.danoeh.antennapod.storage.database.EpisodeFilterDbAdapter;
-import de.danoeh.antennapod.storage.database.FeedAdSkipDbAdapter;
+import de.danoeh.antennapod.storage.database.FeedSkipForwardDbAdapter;
 import de.danoeh.antennapod.storage.database.PlaylistDbAdapter;
 
 public final class OfficialAppExporter {
@@ -28,7 +28,7 @@ public final class OfficialAppExporter {
         PlaylistDbAdapter.TABLE_NAME_PLAYLISTS,
         PlaylistDbAdapter.TABLE_NAME_PLAYLIST_DISMISSED,
         PlaylistDbAdapter.TABLE_NAME_PLAYLIST_EPISODES,
-        FeedAdSkipDbAdapter.TABLE_NAME_FEED_AD_SKIP,
+        FeedSkipForwardDbAdapter.TABLE_NAME_FEED_SKIP_FORWARD,
         EpisodeFilterDbAdapter.TABLE_NAME_FEED_EPISODE_FILTERS,
         EpisodeFilterDbAdapter.TABLE_NAME_EPISODE_FILTER_CONDITIONS
     };

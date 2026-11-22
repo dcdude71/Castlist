@@ -5,13 +5,12 @@ import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
 import de.danoeh.antennapod.net.sync.wearinterface.WearDataPaths
 import de.danoeh.antennapod.net.sync.wearinterface.WearSerializer
-import de.danoeh.antennapod.wearos.AdSkipRepository
 import de.danoeh.antennapod.wearos.PlaylistRepository
 
 class WearDataListenerService : WearableListenerService() {
     override fun onMessageReceived(event: MessageEvent) {
         val path = event.path
-        if (PlaylistRepository.handleMessage(path, event.data) || AdSkipRepository.handleMessage(path, event.data)) {
+        if (PlaylistRepository.handleMessage(path, event.data)) {
             return
         }
         when (path) {

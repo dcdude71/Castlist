@@ -50,7 +50,7 @@ import de.danoeh.antennapod.playback.base.RewindAfterPauseUtils;
 import de.danoeh.antennapod.playback.cast.CastPlayerWrapper;
 import de.danoeh.antennapod.playback.service.internal.ExoPlayerUtils;
 import de.danoeh.antennapod.playback.service.internal.MediaLibrarySessionCallback;
-import de.danoeh.antennapod.playback.service.internal.NotificationAdSkip;
+import de.danoeh.antennapod.storage.database.FeedSkipForward;
 import de.danoeh.antennapod.playback.service.internal.PlayableUtils;
 import de.danoeh.antennapod.playback.service.internal.SkipUtils;
 import de.danoeh.antennapod.playback.service.internal.SleepTimer;
@@ -186,7 +186,8 @@ public class Media3PlaybackService extends MediaLibraryService {
             @Override
             public void seekForward() {
                 long duration = getDuration();
-                long target = getCurrentPosition() + UserPreferences.getFastForwardSecs() * 1000L;
+                long target = getCurrentPosition()
+                        + FeedSkipForward.getEffectiveSeconds(currentPlayable) * 1000L;
 
                 if (duration > 0 && target >= duration) {
                     handlePlaybackEnded();
@@ -651,7 +652,6 @@ public class Media3PlaybackService extends MediaLibraryService {
     @OptIn(markerClass = UnstableApi.class)
     private void switchToPlayable(FeedMedia media) {
         currentPlayable = media;
-        NotificationAdSkip.onPlayableChanged(this, media, () -> sessionCallback.refreshNotification(mediaSession));
         playbackStartPosition = Math.max(currentPlayable.getPosition(), 0);
         playedDurationCountedUntil = playbackStartPosition;
 

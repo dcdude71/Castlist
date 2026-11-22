@@ -1,9 +1,9 @@
 package de.danoeh.antennapod.event;
 
-public class FeedAdSkipEvent {
+public class FeedSkipForwardEvent {
     public final long feedId;
 
-    public FeedAdSkipEvent(long feedId) {
+    public FeedSkipForwardEvent(long feedId) {
         this.feedId = feedId;
     }
 }

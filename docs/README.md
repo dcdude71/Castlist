@@ -8,7 +8,7 @@ How to use the features that Castlist adds on top of [AntennaPod](https://antenn
 | [Home screen](home-screen.md) | The playlists widget, playlist icons and app shortcuts |
 | [Watch](watch.md) | The Wear OS companion app: start playlists and control playback from the watch, and how to install it |
 | [Episode filter](episode-filter.md) | Basic and Advanced filters: which episodes download, and which ones playlists use |
-| [Skip ad and the player](player.md) | The Skip ad button and the modern player |
+| [The player and skip forward](player.md) | The modern player, its cover-coloured backgrounds, and skip forward time per podcast |
 | [Foldables and big screens](foldables.md) | Two-pane layouts, tabletop mode, episode details beside the list |
 | [Backups](backups.md) | Backing up, restoring, and switching back to the official app |
 | [FAQ](faq.md) | Common questions |

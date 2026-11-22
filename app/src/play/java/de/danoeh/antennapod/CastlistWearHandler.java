@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.media3.common.C;
 
 import com.google.android.gms.wearable.Wearable;
 
@@ -14,17 +13,11 @@ import java.util.List;
 import java.util.Map;
 
 import de.danoeh.antennapod.model.feed.FeedItem;
-import de.danoeh.antennapod.model.feed.FeedMedia;
 import de.danoeh.antennapod.model.playlist.Playlist;
-import de.danoeh.antennapod.net.sync.wearinterface.CastlistWearAdSkip;
 import de.danoeh.antennapod.net.sync.wearinterface.CastlistWearPlaylists;
-import de.danoeh.antennapod.playback.service.PlaybackController;
 import de.danoeh.antennapod.playback.service.PlaybackServiceStarter;
-import de.danoeh.antennapod.storage.database.DBReader;
-import de.danoeh.antennapod.storage.database.FeedAdSkip;
 import de.danoeh.antennapod.storage.database.PlaylistPlayback;
 import de.danoeh.antennapod.storage.database.PlaylistReader;
-import de.danoeh.antennapod.storage.preferences.PlaybackPreferences;
 
 final class CastlistWearHandler {
     private static final String TAG = "CastlistWearHandler";
@@ -39,44 +32,12 @@ final class CastlistWearHandler {
                     .addOnFailureListener(e -> Log.e(TAG, "Failed to send playlists", e));
             return true;
         }
-        Long adSkipItemId = CastlistWearAdSkip.parseAdSkipPath(path);
-        if (adSkipItemId != null) {
-            FeedItem item = DBReader.getFeedItem(adSkipItemId);
-            int seconds = item == null ? 0 : FeedAdSkip.getSeconds(item.getFeedId());
-            byte[] payload = CastlistWearAdSkip.secondsToBytes(seconds);
-            Wearable.getMessageClient(context).sendMessage(sourceNodeId, path, payload)
-                    .addOnFailureListener(e -> Log.e(TAG, "Failed to send ad skip time", e));
-            return true;
-        }
-        if (CastlistWearAdSkip.SKIP_AD.equals(path)) {
-            skipAd(context);
-            return true;
-        }
         Long playlistId = CastlistWearPlaylists.parsePlayPlaylistPath(path);
         if (playlistId != null) {
             playPlaylist(context, playlistId);
             return true;
         }
         return path.startsWith(CastlistWearPlaylists.PLAY_PLAYLIST_PREFIX);
-    }
-
-    private static void skipAd(@NonNull Context context) {
-        FeedMedia media = DBReader.getFeedMedia(PlaybackPreferences.getCurrentlyPlayingFeedMediaId());
-        if (media == null || media.getItem() == null) {
-            return;
-        }
-        final long skipMillis = FeedAdSkip.getSeconds(media.getItem().getFeedId()) * 1000L;
-        if (skipMillis <= 0) {
-            return;
-        }
-        PlaybackController.bindToMedia3Service(context.getApplicationContext(), controller -> {
-            if (controller.getCurrentMediaItem() == null) {
-                return;
-            }
-            long target = controller.getCurrentPosition() + skipMillis;
-            long duration = controller.getDuration();
-            controller.seekTo(duration == C.TIME_UNSET ? target : Math.min(duration, target));
-        });
     }
 
     @NonNull

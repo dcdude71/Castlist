@@ -68,6 +68,7 @@ import de.danoeh.antennapod.playback.service.internal.PlaybackVolumeUpdater;
 import de.danoeh.antennapod.model.playback.TimerValue;
 import de.danoeh.antennapod.playback.service.internal.WearMediaSession;
 import de.danoeh.antennapod.storage.preferences.SleepTimerType;
+import de.danoeh.antennapod.storage.database.FeedSkipForward;
 import de.danoeh.antennapod.ui.notifications.NotificationUtils;
 import de.danoeh.antennapod.ui.widget.WidgetUpdater;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
@@ -720,7 +721,7 @@ public class PlaybackService extends MediaBrowserServiceCompat {
                 return false;
             case KeyEvent.KEYCODE_MEDIA_FAST_FORWARD:
                 if (getStatus() == PlayerStatus.PLAYING || getStatus() == PlayerStatus.PAUSED) {
-                    mediaPlayer.seekDelta(UserPreferences.getFastForwardSecs() * 1000);
+                    mediaPlayer.seekDelta(FeedSkipForward.getEffectiveSeconds(getPlayable()) * 1000);
                     return true;
                 }
                 return false;
@@ -1956,7 +1957,7 @@ public class PlaybackService extends MediaBrowserServiceCompat {
         @Override
         public void onFastForward() {
             Log.d(TAG, "onFastForward()");
-            seekDelta(UserPreferences.getFastForwardSecs() * 1000);
+            seekDelta(FeedSkipForward.getEffectiveSeconds(getPlayable()) * 1000);
         }
 
         @Override
@@ -1968,7 +1969,7 @@ public class PlaybackService extends MediaBrowserServiceCompat {
                     || uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_CAR) {
                 mediaPlayer.skip();
             } else {
-                seekDelta(UserPreferences.getFastForwardSecs() * 1000);
+                seekDelta(FeedSkipForward.getEffectiveSeconds(getPlayable()) * 1000);
             }
         }
 

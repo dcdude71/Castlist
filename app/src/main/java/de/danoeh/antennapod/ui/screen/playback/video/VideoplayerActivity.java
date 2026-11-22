@@ -41,6 +41,7 @@ import de.danoeh.antennapod.playback.service.PlaybackController;
 import de.danoeh.antennapod.playback.service.PlaybackService;
 import de.danoeh.antennapod.storage.database.DBReader;
 import de.danoeh.antennapod.storage.database.DBWriter;
+import de.danoeh.antennapod.storage.database.FeedSkipForward;
 import de.danoeh.antennapod.storage.preferences.UserPreferences;
 import de.danoeh.antennapod.ui.appstartintent.MainActivityStarter;
 import de.danoeh.antennapod.ui.common.IntentUtils;
@@ -364,7 +365,7 @@ public class VideoplayerActivity extends CastEnabledActivity
             return;
         }
         int curr = controller.getPosition();
-        controller.seekTo(curr + UserPreferences.getFastForwardSecs() * 1000);
+        controller.seekTo(curr + FeedSkipForward.getEffectiveSeconds(controller.getMedia()) * 1000);
     }
 
     private final SurfaceHolder.Callback surfaceHolderCallback = new SurfaceHolder.Callback() {

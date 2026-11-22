@@ -4,7 +4,7 @@ Castlist has a companion app for Wear OS watches (Galaxy Watch, Pixel Watch and 
 
 ## What it does
 
-- **Now playing** at the top: the episode playing on the phone. Tap it for play/pause and skip back and forward. If the podcast has a [Skip ad](player.md) time, a **Skip ad** button jumps ahead by that time.
+- **Now playing** at the top: the episode playing on the phone. Tap it for play/pause and skip back and forward. Skip forward uses the podcast's own [skip forward time](player.md) when it has one.
 - **Playlists**: your playlists, with the same icons as on the phone (✦ smart, ≡ manual), how many episodes each holds and the time left. Tap one to start it on the phone, from the top. **All playlists** starts your playlists from the top, like the ▶ button in the Playlists tab.
 - **Queue**, **Downloads**, **Episodes** and **Subscriptions**: browse the phone's lists and start an episode from the watch.
 

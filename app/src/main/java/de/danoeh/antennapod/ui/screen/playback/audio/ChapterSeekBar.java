@@ -48,6 +48,19 @@ public class ChapterSeekBar extends androidx.appcompat.widget.AppCompatSeekBar {
         paintProgressPrimary.setColor(ThemeUtils.getColorFromAttr(getContext(), R.attr.colorPrimary));
     }
 
+    /** Castlist: track colours for the cover-coloured player; null restores the theme colours. */
+    public void setTrackColors(@androidx.annotation.Nullable Integer background,
+                               @androidx.annotation.Nullable Integer progress) {
+        paintBackground.setColor(background != null ? background
+                : ThemeUtils.getColorFromAttr(getContext(), R.attr.colorSurfaceVariant));
+        if (background == null) {
+            paintBackground.setAlpha(128);
+        }
+        paintProgressPrimary.setColor(progress != null ? progress
+                : ThemeUtils.getColorFromAttr(getContext(), R.attr.colorPrimary));
+        invalidate();
+    }
+
     public void setTrackScale(float scale) {
         density = getResources().getDisplayMetrics().density * scale;
         invalidate();

@@ -214,10 +214,6 @@ fun EpisodeDetailScreen(
                 }
             }
 
-            if (uiState.hasStartedPlaying) {
-                item { SkipAdButton(item.id) }
-            }
-
             item {
                 ListItem(
                     text = stringResource(CommonR.string.wearos_open_on_phone),

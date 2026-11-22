@@ -11,10 +11,17 @@
                 android:title="@string/pref_player_style_title"
                 app:useSimpleSummaryProvider="true"
                 android:defaultValue="modern" />
+        <de.danoeh.antennapod.ui.preferences.preference.MaterialListPreference
+                android:entryValues="@array/player_background_values"
+                android:entries="@array/player_background_titles"
+                android:key="prefPlayerBackground"
+                android:title="@string/pref_player_background_title"
+                app:useSimpleSummaryProvider="true"
+                android:defaultValue="gradient" />
         <SwitchPreferenceCompat
-                android:key="prefNotificationAdSkip"
-                android:title="@string/pref_notification_ad_skip_title"
-                android:summary="@string/pref_notification_ad_skip_summary"
+                android:key="prefPlayerTint"
+                android:title="@string/pref_player_tint_title"
+                android:summary="@string/pref_player_tint_summary"
                 android:defaultValue="true" />
     </PreferenceCategory>
 

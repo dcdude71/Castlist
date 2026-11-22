@@ -120,6 +120,9 @@ public class CoverFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         configureForOrientation(getResources().getConfiguration());
+        if (PlayerStyle.isModern(requireContext())) {
+            view.post(PlayerBackground::reapplyCurrent);
+        }
     }
 
     private void loadMediaInfo(boolean includingChapters) {

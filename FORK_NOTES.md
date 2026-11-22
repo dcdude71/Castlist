@@ -20,11 +20,11 @@ Handoff notes for working on this fork (on any machine, with or without Claude C
 ## Keep the diff against upstream small
 The fork is rebased on upstream regularly, so:
 - Put new code in new, fork-only classes and files. Only add small hooks to upstream files.
-- Never bump the database version. Fork tables are created with `CREATE TABLE IF NOT EXISTS` from `PodDBAdapter`'s helper `onOpen` (`PlaylistDbAdapter.createTables`, `FeedAdSkipDbAdapter.createTables`).
+- Never bump the database version. Fork tables are created with `CREATE TABLE IF NOT EXISTS` from `PodDBAdapter`'s helper `onOpen` (`PlaylistDbAdapter.createTables`, `FeedSkipForwardDbAdapter.createTables`).
 - `git diff upstream/develop...HEAD --stat` lists everything the fork touches.
 
 ## Castlist settings screen
-Settings → Castlist features (`preferences_castlist.xml`, `CastlistPreferencesFragment`) holds the app-wide fork settings: player style, playlist end action, episode filter style. The entry is added from `ForkProjectSettings`, just above the Project category; `PreferenceActivity` and the settings search have one-line hooks. Upstream's settings XML files are untouched. Per-podcast ad skip stays in podcast settings and the official-app export in Backup.
+Settings → Castlist features (`preferences_castlist.xml`, `CastlistPreferencesFragment`) holds the app-wide fork settings: player style, player background, tint controls, playlist end action, episode filter style. The entry is added from `ForkProjectSettings`, just above the Project category; `PreferenceActivity` and the settings search have one-line hooks. Upstream's settings XML files are untouched. Per-podcast skip forward stays in podcast settings and the official-app export in Backup.
 
 ## Rule-based playlists
 Approved design (open to adjustment once used in practice):
@@ -47,7 +47,7 @@ Phases:
 2. Screens and rule editor: done
 3. Playback: done
 4. Auto-download and cleanup protection: done
-5. Android Auto: done, tested in a car on 2026-11-19 (Playlists folder, playlist playback, Skip ad button). Sideloaded installs (GitHub, Obtainium, F-Droid) need Android Auto's developer setting "Unknown sources" to show the app. A "Playlists" folder appears after "Continue listening" when at least one playlist has "Show in Android Auto" ticked (playlist screen ⋮ menu; on by default for new playlists, off for existing ones). Starting an episode from it starts playlist playback. Code: `PlaylistMediaLibrary` plus small hooks in `MediaLibrarySessionCallback`.
+5. Android Auto: done, tested in a car on 2026-11-19 (Playlists folder, playlist playback). Sideloaded installs (GitHub, Obtainium, F-Droid) need Android Auto's developer setting "Unknown sources" to show the app. A "Playlists" folder appears after "Continue listening" when at least one playlist has "Show in Android Auto" ticked (playlist screen ⋮ menu; on by default for new playlists, off for existing ones). Starting an episode from it starts playlist playback. Code: `PlaylistMediaLibrary` plus small hooks in `MediaLibrarySessionCallback`.
 
 ## Manual playlists
 Added in v0.10.0 (designed 2026-11-20, mockups: https://claude.ai/artifact/DjXtvtMi6k417dMAkU4HsU). The queue stays untouched; manual playlists only add to it.
@@ -65,7 +65,7 @@ Added in v0.10.0 (designed 2026-11-20, mockups: https://claude.ai/artifact/DjXtv
 Upstream's `:app-wearos` (a remote control talking to the phone through the Wearable Data Layer, play flavor only) is shipped since v0.10.2.
 - Identity: a block at the end of `app-wearos/build.gradle` sets `applicationId io.github.dcdude71.castlist`, the version from `app/castlist-version.properties` and the app name per build type (upstream sets "AntennaPod" in `common.gradle`). Castlist's launcher PNGs are copied into `app-wearos/src/main/res/mipmap-*`. Phone and watch must share package name and signing key.
 - Playlists: `CastlistWearPlaylists` (wear-interface) defines `/castlist/playlists` (JSON list: id, name, kind, episodes, time left; "All playlists" first, id -1) and `/castlist/play_playlist/<id>`. Phone side: `CastlistWearHandler` (app/src/play), hooked at the top of upstream's `WearListenerService.handleMessage`. It must start playback with the application context: the listener service is short-lived, and a MediaController bound to it leaks and later crashes the app. Watch side: `PlaylistListActivity`/`PlaylistListViewModel` (+ `PlaylistRepository`), hooks in `MainListActivity` (one `item { PlaylistsMenuItem() }`) and `WearDataListenerService` (first line), activity declared in the watch manifest.
-- Skip ad: `CastlistWearAdSkip` (wear-interface) defines `/castlist/ad_skip/<itemId>` (the phone replies on the same path with the podcast's seconds; the watch's episodes carry no feed id, so it asks by episode) and `/castlist/skip_ad` (the phone seeks the playing episode by its podcast's time). Phone side in `CastlistWearHandler`; watch side `SkipAdButton.kt` (+ `AdSkipRepository`), hooks in `EpisodeDetailActivity` (one item, while playing) and `WearDataListenerService`.
+- Skip ad on the watch was removed in favour of per-podcast skip forward: the watch's fast-forward goes through `WearListenerService` → `seekForward()`, which uses the podcast's time.
 - Testing: the user's Galaxy Watch Ultra (SM-L715U) is paired with the laptop's adb; its Wi-Fi debugging port changes, and Wi-Fi drops when the screen sleeps. Debug phone and debug watch apps pair with each other (same debug key). Samsung's `watchuniteplugin` crashes on its own (BLUETOOTH_PRIVILEGED); not ours.
 - User guide: `docs/watch.md` (install over wireless debugging).
 
@@ -75,8 +75,11 @@ Inspired by Downcast's playlist engine.
 - Debug build: `./gradlew --console=plain :app:installPlayDebug`, then `adb shell monkey -p io.github.dcdude71.castlist.debug -c android.intent.category.LAUNCHER 1` (AGENTS.md's launch command uses the upstream package name and does not work here).
 - The debug app is separate from the release app. Import a database export to test with real podcasts. Downloaded files from the release app are not readable by the debug app, so reset `FeedMedia.downloaded`/`file_url` in the imported copy (`adb exec-out run-as io.github.dcdude71.castlist.debug cat databases/Antennapod.db`, edit with sqlite3, push back with `run-as ... sh -c 'cat > databases/Antennapod.db'` while the app is force-stopped).
 
-## Skip ad
-Per-podcast "Ad skip time" in the podcast's settings (fork table via `FeedAdSkip` / `FeedAdSkipDbAdapter`). When set, the player shows a "Skip ad" button that jumps ahead by that amount from the current position, separate from fast-forward. The media notification gets the same button right after fast-forward (`NotificationAdSkip`, hooks in `MediaLibrarySessionCallback` and `Media3PlaybackService.switchToPlayable`), unless Settings → Castlist features → "Skip ad in notification" (`prefNotificationAdSkip`) is off. Android shows it on the lock screen and in Quick Settings, not in the 3-button collapsed notification.
+## Skip forward per podcast
+Replaced "Skip ad" (2026-11-22). Per-podcast "Skip forward time" in podcast settings (`FeedSkipForwardDialog`); 0/empty = global fast-forward. Stored in the fork table `FeedAdSkip` (name kept so old ad skip values carry over) via `FeedSkipForward` / `FeedSkipForwardDbAdapter`, cached in memory so playback code can read it on the main thread. `FeedSkipForward.getEffectiveSeconds(feedId|playable)` is used by `Media3PlaybackService.seekForward` (notification, headset, Android Auto, watch), the legacy `PlaybackService`, `AudioPlayerFragment` (button label and seek; long-press edits the podcast's time when set) and `VideoplayerActivity`. No extra buttons anywhere.
+
+## Player background (modern style)
+`PlayerBackground` (audio package): Settings → Castlist features → "Player background" (`prefPlayerBackground`: theme / gradient (default) / solid / blur) and "Tint controls with cover colour" (`prefPlayerTint`, default on). Loads the episode artwork with Glide (256 px), Palette picks colours; background views `playerBackgroundImage` + `playerBackground` at the bottom of `audioplayer_fragment_modern.xml`. Blur uses `RenderEffect` (Android 12+, gradient otherwise). Text/icons are re-coloured only for Solid (originals kept in tag `playerOriginalColor`); accent is the cover's vibrant colour, lightened/darkened until 2.6:1 against the background. Lookups are scoped to `playerContent` because the mini player reuses ids (`butPlay`). Status bar icons follow the background while the sheet is expanded. Episode title and podcast name are centred.
 
 ## Episode filter (advanced)
 - Model: `AdvancedEpisodeFilter` = keep conditions (any/all) + skip conditions (any/all); `EpisodeCondition` = field (POST = title or description, TITLE, DESCRIPTION, LENGTH), operator, value, whole word. Matching ignores case and accents (`EpisodeCondition.normalize`). Unknown length never fails a keep condition nor triggers a skip one.

@@ -123,7 +123,6 @@ public class MediaLibrarySessionCallback implements MediaLibraryService.MediaLib
                 .add(SESSION_COMMAND_SET_SLEEP_TIMER)
                 .add(SESSION_COMMAND_DISABLE_SLEEP_TIMER)
                 .add(SESSION_COMMAND_EXTEND_SLEEP_TIMER)
-                .add(NotificationAdSkip.SESSION_COMMAND_SKIP_AD)
                 .build();
         Player.Commands playerCommands = new Player.Commands.Builder()
                 .addAllCommands()
@@ -159,7 +158,6 @@ public class MediaLibrarySessionCallback implements MediaLibraryService.MediaLib
                 .setSessionCommand(SESSION_COMMAND_FAST_FORWARD)
                 .setDisplayName(context.getString(R.string.fast_forward_label))
                 .build());
-        NotificationAdSkip.addButton(context, buttons);
 
         if (UserPreferences.showPlaybackSpeedOnFullNotification()) {
             buttons.add(new CommandButton.Builder(CommandButton.ICON_UNDEFINED)
@@ -240,8 +238,6 @@ public class MediaLibrarySessionCallback implements MediaLibraryService.MediaLib
             return Futures.immediateFuture(new SessionResult(SessionResult.RESULT_SUCCESS));
         } else if (customCommand.customAction.equals(SESSION_COMMAND_SKIP_EPISODE.customAction)) {
             session.getPlayer().seekToNextMediaItem();
-            return Futures.immediateFuture(new SessionResult(SessionResult.RESULT_SUCCESS));
-        } else if (NotificationAdSkip.handle(customCommand, session.getPlayer())) {
             return Futures.immediateFuture(new SessionResult(SessionResult.RESULT_SUCCESS));
         }
         return Futures.immediateFuture(new SessionResult(SessionError.ERROR_NOT_SUPPORTED));

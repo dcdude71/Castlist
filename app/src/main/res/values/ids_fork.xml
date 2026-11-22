@@ -4,4 +4,6 @@
     <item name="episodeDetailPaneDivider" type="id" />
     <item name="episodeDetailPaneWrapper" type="id" />
     <item name="playlistLine" type="id" />
+    <item name="playerBackgroundController" type="id" />
+    <item name="playerOriginalColor" type="id" />
 </resources>

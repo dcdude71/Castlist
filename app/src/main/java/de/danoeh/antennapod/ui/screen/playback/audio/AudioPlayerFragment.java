@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
@@ -32,7 +31,7 @@ import de.danoeh.antennapod.playback.service.PlaybackServiceInterface;
 import de.danoeh.antennapod.playback.service.PlaybackServiceStarter;
 import de.danoeh.antennapod.storage.database.DBReader;
 import de.danoeh.antennapod.storage.database.DBWriter;
-import de.danoeh.antennapod.storage.database.FeedAdSkip;
+import de.danoeh.antennapod.storage.database.FeedSkipForward;
 import de.danoeh.antennapod.storage.preferences.PlaybackPreferences;
 import de.danoeh.antennapod.ui.appstartintent.MainActivityStarter;
 import de.danoeh.antennapod.ui.appstartintent.MediaButtonStarter;
@@ -58,8 +57,9 @@ import de.danoeh.antennapod.BuildConfig;
 import de.danoeh.antennapod.R;
 import de.danoeh.antennapod.activity.MainActivity;
 import de.danoeh.antennapod.ui.common.Converter;
+import de.danoeh.antennapod.ui.screen.feed.preferences.FeedSkipForwardDialog;
 import de.danoeh.antennapod.ui.screen.feed.preferences.SkipPreferenceDialog;
-import de.danoeh.antennapod.event.FeedAdSkipEvent;
+import de.danoeh.antennapod.event.FeedSkipForwardEvent;
 import de.danoeh.antennapod.event.FeedItemEvent;
 import de.danoeh.antennapod.event.PlayerErrorEvent;
 import de.danoeh.antennapod.event.PlayerStatusEvent;
@@ -101,14 +101,13 @@ public class AudioPlayerFragment extends Fragment implements
     private ImageButton butFF;
     private TextView txtvFF;
     private ImageButton butSkip;
-    private Button butAdSkip;
     private MaterialToolbar toolbar;
     private ProgressBar progressIndicator;
     private CardView cardViewSeek;
     private TextView txtvSeek;
 
     private FeedMedia currentMedia;
-    private volatile int adSkipSeconds;
+    private volatile int skipForwardSeconds;
     private boolean modernStyle;
     private Disposable disposable;
     private boolean showTimeLeft;
@@ -145,7 +144,6 @@ public class AudioPlayerFragment extends Fragment implements
         butFF = root.findViewById(R.id.butFF);
         txtvFF = root.findViewById(R.id.txtvFF);
         butSkip = root.findViewById(R.id.butSkip);
-        butAdSkip = root.findViewById(R.id.butAdSkip);
         progressIndicator = root.findViewById(R.id.progLoading);
         cardViewSeek = root.findViewById(R.id.cardViewSeek);
         txtvSeek = root.findViewById(R.id.txtvSeek);
@@ -173,6 +171,7 @@ public class AudioPlayerFragment extends Fragment implements
             }
         });
         PlayerStyle.setupLayout(this, root);
+        PlayerBackground.setup(this, root);
 
         return root;
     }
@@ -244,36 +243,26 @@ public class AudioPlayerFragment extends Fragment implements
                         controller.seekForward();
                     } else if (media != null) {
                         seekWithoutPlaybackService(media, Math.min(media.getDuration(),
-                                media.getPosition() + UserPreferences.getFastForwardSecs() * 1000));
+                                media.getPosition() + skipForwardSeconds * 1000));
                     }
                 });
             } else {
-                PlaybackController.bindToService(getActivity(), playbackService ->
-                        playbackService.seekTo(playbackService.getCurrentPosition()
-                                + UserPreferences.getFastForwardSecs() * 1000));
-            }
-        });
-        butFF.setOnLongClickListener(v -> {
-            SkipPreferenceDialog.showSkipPreference(getContext(),
-                    SkipPreferenceDialog.SkipDirection.SKIP_FORWARD, txtvFF);
-            return false;
-        });
-        butAdSkip.setOnClickListener(v -> {
-            final FeedMedia media = currentMedia;
-            final int skipMillis = adSkipSeconds * 1000;
-            if (BuildConfig.USE_MEDIA3_PLAYBACK_SERVICE) {
-                PlaybackController.bindToMedia3Service(getContext(), controller -> {
-                    if (controller.getCurrentMediaItem() != null) {
-                        controller.seekTo(controller.getCurrentPosition() + skipMillis);
-                    } else if (media != null) {
-                        seekWithoutPlaybackService(media,
-                                Math.min(media.getDuration(), media.getPosition() + skipMillis));
-                    }
-                });
-            } else {
+                final int skipMillis = skipForwardSeconds * 1000;
                 PlaybackController.bindToService(getActivity(), playbackService ->
                         playbackService.seekTo(playbackService.getCurrentPosition() + skipMillis));
             }
+        });
+        butFF.setOnLongClickListener(v -> {
+            FeedMedia media = currentMedia;
+            long feedId = media != null && media.getItem() != null ? media.getItem().getFeedId() : -1;
+            if (feedId >= 0 && FeedSkipForward.getSeconds(feedId) > 0) {
+                // The podcast has its own time: edit that one, it is the number on the button.
+                FeedSkipForwardDialog.show(getContext(), feedId, FeedSkipForward.getSeconds(feedId), seconds -> { });
+            } else {
+                SkipPreferenceDialog.showSkipPreference(getContext(),
+                        SkipPreferenceDialog.SkipDirection.SKIP_FORWARD, txtvFF);
+            }
+            return true;
         });
         butSkip.setOnClickListener(v -> {
             if (BuildConfig.USE_MEDIA3_PLAYBACK_SERVICE) {
@@ -333,7 +322,7 @@ public class AudioPlayerFragment extends Fragment implements
         disposable = Maybe.<FeedMedia>create(emitter -> {
             FeedMedia media = DBReader.getFeedMedia(PlaybackPreferences.getCurrentlyPlayingFeedMediaId());
             if (media != null) {
-                adSkipSeconds = media.getItem() == null ? 0 : FeedAdSkip.getSeconds(media.getItem().getFeedId());
+                skipForwardSeconds = FeedSkipForward.getEffectiveSeconds(media);
                 if (includingChapters) {
                     ChapterUtils.loadChapters(media, getContext(), false);
                 }
@@ -364,8 +353,8 @@ public class AudioPlayerFragment extends Fragment implements
         boolean isPlaying = PlaybackServiceInterface.isPlaying
                 && PlaybackPreferences.getCurrentPlayerStatus() == PlaybackPreferences.PLAYER_STATUS_PLAYING;
         butPlay.setIsShowPlay(!isPlaying);
-        butAdSkip.setVisibility(adSkipSeconds > 0 ? View.VISIBLE : View.GONE);
-        butAdSkip.setText(getString(R.string.skip_ad_label, adSkipSeconds));
+        PlayerBackground.update(getView(), currentMedia);
+        txtvFF.setText(NumberFormat.getInstance().format(skipForwardSeconds));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -374,7 +363,7 @@ public class AudioPlayerFragment extends Fragment implements
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onFeedAdSkipChanged(FeedAdSkipEvent event) {
+    public void onFeedSkipForwardChanged(FeedSkipForwardEvent event) {
         loadMediaInfo(false);
     }
 
@@ -396,7 +385,6 @@ public class AudioPlayerFragment extends Fragment implements
         loadMediaInfo(false);
         EventBus.getDefault().register(this);
         txtvRev.setText(NumberFormat.getInstance().format(UserPreferences.getRewindSecs()));
-        txtvFF.setText(NumberFormat.getInstance().format(UserPreferences.getFastForwardSecs()));
         if (modernStyle != PlayerStyle.isModern(requireContext())) {
             requireActivity().recreate();
         }
@@ -414,6 +402,7 @@ public class AudioPlayerFragment extends Fragment implements
         super.onStop();
         progressIndicator.setVisibility(View.GONE);
         PlayerStyle.onStop(this);
+        PlayerBackground.onStop(getView());
         EventBus.getDefault().unregister(this);
         if (disposable != null) {
             disposable.dispose();
@@ -615,6 +604,7 @@ public class AudioPlayerFragment extends Fragment implements
         float toolbarFadeProgress = Math.max(0.0f, Math.min(0.2f, slideOffset - 0.6f)) / 0.2f;
         toolbar.setAlpha(toolbarFadeProgress);
         toolbar.setVisibility(toolbarFadeProgress < 0.01f ? View.INVISIBLE : View.VISIBLE);
+        PlayerBackground.onSlide(getView(), slideOffset);
     }
 
     private static class AudioPlayerPagerAdapter extends FragmentStateAdapter {

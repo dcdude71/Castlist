@@ -75,11 +75,15 @@ public final class PlayerStyle {
         hideToolbarSleepTimer(root.findViewById(R.id.toolbar));
         Context context = root.getContext();
         boolean active = !event.isCancelled() && !event.isOver();
-        int color = active ? ThemeUtils.getColorFromAttr(context, androidx.appcompat.R.attr.colorPrimary)
+        PlayerBackground.Colors colors = PlayerBackground.currentColors();
+        int accent = colors != null && colors.accent != null ? colors.accent
+                : ThemeUtils.getColorFromAttr(context, androidx.appcompat.R.attr.colorPrimary);
+        int color = active ? accent : colors != null && colors.foreground != null ? colors.secondary
                 : ThemeUtils.getColorFromAttr(context, android.R.attr.textColorSecondary);
         label.setTextColor(color);
-        sleepButton.setColorFilter(active ? color : ThemeUtils.getColorFromAttr(context,
-                androidx.appcompat.R.attr.colorControlNormal));
+        int idle = colors != null && colors.foreground != null ? colors.foreground
+                : ThemeUtils.getColorFromAttr(context, androidx.appcompat.R.attr.colorControlNormal);
+        sleepButton.setColorFilter(active ? color : idle);
         if (!active) {
             label.setText(R.string.player_sleep_label);
         } else if (SleepTimerPreferences.getSleepTimerType() == SleepTimerType.EPISODES) {
@@ -161,12 +165,12 @@ public final class PlayerStyle {
         textContainer.removeView(binding.txtvEpisodeTitle);
         textContainer.addView(binding.txtvEpisodeTitle, 0);
 
-        binding.txtvEpisodeTitle.setGravity(Gravity.START);
+        binding.txtvEpisodeTitle.setGravity(Gravity.CENTER_HORIZONTAL);
         binding.txtvEpisodeTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
         binding.txtvEpisodeTitle.setTypeface(binding.txtvEpisodeTitle.getTypeface(), Typeface.BOLD);
         ((LinearLayout.LayoutParams) binding.txtvEpisodeTitle.getLayoutParams()).bottomMargin = 0;
 
-        binding.txtvPodcastTitle.setGravity(Gravity.START);
+        binding.txtvPodcastTitle.setGravity(Gravity.CENTER_HORIZONTAL);
         binding.txtvPodcastTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         ((LinearLayout.LayoutParams) binding.txtvPodcastTitle.getLayoutParams()).bottomMargin = dp(context, 8);
 

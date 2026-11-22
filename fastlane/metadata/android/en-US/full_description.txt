@@ -19,8 +19,8 @@ Castlist is a podcast player built on AntennaPod, the open-source podcast manage
 
 <b>Player</b>
 <ul>
-<li>A modern player with big controls, or the classic AntennaPod layout.</li>
-<li>A Skip ad button with a per-podcast time, also on the lock screen.</li>
+<li>A modern player with big controls and colours from the artwork, or the classic AntennaPod layout.</li>
+<li>A fast-forward time per podcast, handy for skipping ads, used everywhere: player, lock screen, headphones, Android Auto, watch.</li>
 <li>Layouts for foldables and large screens.</li>
 </ul>
 

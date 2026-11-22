@@ -16,7 +16,7 @@ Castlist is a personal fork of [AntennaPod](https://github.com/AntennaPod/Antenn
 - **[Playlists on your home screen](docs/home-screen.md):** a 4×1 widget that starts one of four playlists with one tap, playlist icons, and playlists in the app's long-press shortcuts.
 - **[A Wear OS watch app](docs/watch.md):** start any playlist from your wrist, see what's playing and control it, and browse the queue, downloads and subscriptions on the phone.
 - **[Advanced episode filter](docs/episode-filter.md):** include and skip words together, search titles and descriptions, whole words, a length range, with a live preview that shows which episodes are kept or skipped, and why. Playlists respect the filter.
-- **[Skip ad button and a modern player](docs/player.md):** a per-podcast "Skip ad" button and a redesigned full-screen player (the classic one is one setting away).
+- **[A modern player and per-podcast skip forward](docs/player.md):** a redesigned full-screen player that takes its colours from the artwork (the classic one is one setting away), and a fast-forward time per podcast, handy for skipping ads.
 - **[Made for foldables and big screens](docs/foldables.md):** two-pane layouts for playlists and episode details, show notes beside the player, and tabletop mode.
 - **[Backups that work both ways](docs/backups.md):** the regular backup includes everything Castlist adds, and a separate export lets you go back to the official app.
 - **Installs next to the official app:** its own name, package name (`io.github.dcdude71.castlist`) and icon, so you can run both and tell them apart. The two apps do not share data.
@@ -35,7 +35,7 @@ Castlist is built to follow AntennaPod, not to drift away from it.
 
 **Your data stays compatible with the official app.**
 
-- AntennaPod's database is never modified. Its tables and its version number stay exactly as in AntennaPod; everything Castlist adds (playlists, skip-ad times, advanced filters) lives in separate tables of its own.
+- AntennaPod's database is never modified. Its tables and its version number stay exactly as in AntennaPod; everything Castlist adds (playlists, skip forward times, advanced filters) lives in separate tables of its own.
 - A backup from the official AntennaPod imports into Castlist as is.
 - **Export for official AntennaPod** gives you a backup the official app can import, without Castlist's additions. See [Backups](docs/backups.md).
 - Updating Castlist never needs a fresh start: new features add what they need to your existing data automatically.
@@ -54,7 +54,7 @@ This app used to be called AntennaPod Mix. It was renamed to Castlist so it has 
 3. In Castlist: Settings → Backup & restore → **Database import**, and choose the file from step 1.
 4. Check everything is there, then uninstall AntennaPod Mix.
 
-Your subscriptions, played episodes, queue, playlists, skip-ad times and advanced filters all come along. App-wide settings, such as Player style, need to be set again.
+Your subscriptions, played episodes, queue, playlists, skip forward times and advanced filters all come along. App-wide settings, such as Player style, need to be set again.
 
 ## Please read: what to expect
 
@@ -69,7 +69,7 @@ If you need something dependable, the official AntennaPod is the way to go. Than
 
 ## Privacy
 
-Castlist collects no data and sends nothing to its developer. Like AntennaPod, it only connects to the podcast feeds you subscribe to and to services you choose to use (such as podcast search or synchronization). The fork's added features (playlists, widgets and shortcuts, Android Auto, the watch app, Skip ad, the advanced episode filter, the foldable layouts) work entirely on your devices. For the official app's policy, see [antennapod.org/privacy](https://antennapod.org/privacy/).
+Castlist collects no data and sends nothing to its developer. Like AntennaPod, it only connects to the podcast feeds you subscribe to and to services you choose to use (such as podcast search or synchronization). The fork's added features (playlists, widgets and shortcuts, Android Auto, the watch app, per-podcast skip forward, the advanced episode filter, the foldable layouts) work entirely on your devices. For the official app's policy, see [antennapod.org/privacy](https://antennapod.org/privacy/).
 
 ## Credits
 

@@ -8,6 +8,18 @@
         <item>modern</item>
         <item>classic</item>
     </string-array>
+    <string-array name="player_background_titles">
+        <item>@string/player_background_theme</item>
+        <item>@string/player_background_gradient</item>
+        <item>@string/player_background_solid</item>
+        <item>@string/player_background_blur</item>
+    </string-array>
+    <string-array name="player_background_values" translatable="false">
+        <item>theme</item>
+        <item>gradient</item>
+        <item>solid</item>
+        <item>blur</item>
+    </string-array>
     <string-array name="playlist_end_action_titles">
         <item>@string/pref_playlist_end_action_next_playlist</item>
         <item>@string/pref_playlist_end_action_stop</item>
