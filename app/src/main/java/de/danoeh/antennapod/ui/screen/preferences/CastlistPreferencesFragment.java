@@ -12,10 +12,20 @@ import de.danoeh.antennapod.storage.preferences.EpisodeFilterPreferences;
 import de.danoeh.antennapod.ui.preferences.screen.AnimatedPreferenceFragment;
 
 public class CastlistPreferencesFragment extends AnimatedPreferenceFragment {
+    private static final String PREF_PLAYER_STYLE = "prefPlayerStyle";
+    private static final String STYLE_CLASSIC = "classic";
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.preferences_castlist);
+        ListPreference playerStyle = findPreference(PREF_PLAYER_STYLE);
+        if (playerStyle != null) {
+            updatePlayerOptions(playerStyle.getValue());
+            playerStyle.setOnPreferenceChangeListener((preference, newValue) -> {
+                updatePlayerOptions((String) newValue);
+                return true;
+            });
+        }
         Preference filterStyle = findPreference(EpisodeFilterPreferences.PREF_EPISODE_FILTER_STYLE);
         if (filterStyle != null) {
             filterStyle.setOnPreferenceChangeListener((preference, newValue) -> {
@@ -30,6 +40,17 @@ public class CastlistPreferencesFragment extends AnimatedPreferenceFragment {
                 }
                 return true;
             });
+        }
+    }
+
+    /** Background and tint only exist in the Castlist player style. */
+    private void updatePlayerOptions(String style) {
+        boolean castlistStyle = !STYLE_CLASSIC.equals(style);
+        for (String key : new String[] {"prefPlayerBackground", "prefPlayerTint"}) {
+            Preference preference = findPreference(key);
+            if (preference != null) {
+                preference.setVisible(castlistStyle);
+            }
         }
     }
 

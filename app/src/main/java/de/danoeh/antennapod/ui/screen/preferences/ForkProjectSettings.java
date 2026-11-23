@@ -14,7 +14,8 @@ final class ForkProjectSettings {
     }
 
     static void setup(@NonNull PreferenceFragmentCompat fragment, @NonNull String projectKey,
-                      @NonNull String forumKey, @NonNull String contributeKey) {
+                      @NonNull String documentationKey, @NonNull String forumKey,
+                      @NonNull String contributeKey) {
         PreferenceGroup project = fragment.findPreference(projectKey);
         if (project == null) {
             return;
@@ -51,6 +52,12 @@ final class ForkProjectSettings {
             return true;
         });
         project.addPreference(guide);
+
+        Preference documentation = fragment.findPreference(documentationKey);
+        if (documentation != null) {
+            documentation.setTitle(R.string.fork_documentation_title);
+            documentation.setSummary(R.string.fork_documentation_summary);
+        }
 
         Preference forum = fragment.findPreference(forumKey);
         if (forum != null) {

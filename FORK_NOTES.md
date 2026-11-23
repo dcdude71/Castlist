@@ -89,7 +89,7 @@ Replaced "Skip ad" (2026-11-22). Per-podcast "Skip forward time" in podcast sett
 - Per-episode author and categories are not stored by upstream, so they are not filter fields (yet).
 
 ## Player style
-Settings → Castlist features → Player style: Modern (default) or Classic (upstream layout). Modern aims for an Apple Podcasts-like look: small artwork, bold title, big controls. Fork-only files: `PlayerStyle.java`, `PlayerLayout.java`, `audioplayer_fragment_modern.xml`.
+Settings → Castlist features → Player style: "Castlist" (value `modern`, default) or "AntennaPod" (value `classic`, upstream layout); values kept so existing settings carry over. Background and tint settings are hidden while AntennaPod is selected (`CastlistPreferencesFragment`). Modern aims for an Apple Podcasts-like look: small artwork, bold title, big controls. Fork-only files: `PlayerStyle.java`, `PlayerLayout.java`, `audioplayer_fragment_modern.xml`.
 - Foldables (Modern only, `PlayerLayout`): window ≥ 600dp wide → shownotes in `descriptionPane` beside the controls (pager shows the cover only, Shownotes button hidden). Half-open with a horizontal fold (tabletop, via `androidx.window`) → cover above the fold, controls below; overrides the wide layout. MainActivity handles size changes itself (no recreate), so the layout is re-applied from `AudioPlayerFragment.onConfigurationChanged`.
 - Upstream `NestedScrollableHost` was changed so it works outside a ViewPager2 and no longer cancels its first frame (cancelling froze the unfold animation: `BLASTSyncEngine` sync timeout).
 - Testing needs the real phone: folded, unfolded, half-folded and flat again.

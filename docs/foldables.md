@@ -4,7 +4,7 @@ On a wide screen (an unfolded Pixel Fold or Galaxy Z Fold, a tablet, or a phone 
 
 ## Player
 
-With the modern player, the show notes sit next to the artwork and controls instead of behind the Show notes button.
+With the Castlist player style, the show notes sit next to the artwork and controls instead of behind the Show notes button.
 
 ### Tabletop mode
 

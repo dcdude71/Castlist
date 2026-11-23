@@ -6,11 +6,11 @@ Many podcasts play ads of about the same length. In a podcast's settings, set a 
 
 Leave it empty, or tap **Use global**, to go back to the global time (Settings → Playback → Fast-forward). Long-press the fast-forward button in the player to change the time: the podcast's own time if it has one, otherwise the global one.
 
-## The modern player
+## The Castlist player
 
 The full-screen player has a new look: the artwork, the episode title and podcast name centred below it, and large, well-spaced controls (rewind, play, fast-forward), with speed, sleep timer, next episode and show notes in a labeled row below. Tap the podcast name to open the podcast. While a sleep timer runs, the Sleep button turns to the accent color and shows the time left; tap it to change or stop the timer.
 
-![The modern player](images/player.png)
+![The Castlist player](images/player.png)
 
 ### Background and colours
 
@@ -25,6 +25,6 @@ Settings → Castlist features → **Player background** picks how the player ta
 
 **Tint controls with cover colour** (on by default) gives the play button and progress bar a colour from the artwork. When that colour would be hard to see, the player lightens or darkens it, or falls back to the app's accent colour.
 
-Prefer the original player? Switch back any time in Settings → Castlist features → **Player style → Classic**. The background settings only apply to the modern player.
+Prefer AntennaPod's original player? Switch any time in Settings → Castlist features → **Player style → AntennaPod**. The background and tint settings belong to the Castlist player, so they're hidden while the AntennaPod style is selected.
 
 On big screens and foldables the player rearranges itself; see [Foldables and big screens](foldables.md).

@@ -16,7 +16,7 @@ Castlist is a personal fork of [AntennaPod](https://github.com/AntennaPod/Antenn
 - **[Playlists on your home screen](docs/home-screen.md):** a 4×1 widget that starts one of four playlists with one tap, playlist icons, and playlists in the app's long-press shortcuts.
 - **[A Wear OS watch app](docs/watch.md) (experimental, unsupported):** start any playlist from your wrist, see what's playing and control it, and browse the queue, downloads and subscriptions on the phone.
 - **[Advanced episode filter](docs/episode-filter.md):** include and skip words together, search titles and descriptions, whole words, a length range, with a live preview that shows which episodes are kept or skipped, and why. Playlists respect the filter.
-- **[A modern player and per-podcast skip forward](docs/player.md):** a redesigned full-screen player that takes its colours from the artwork (the classic one is one setting away), and a fast-forward time per podcast, handy for skipping ads.
+- **[A modern player and per-podcast skip forward](docs/player.md):** a redesigned full-screen player that takes its colours from the artwork (AntennaPod's original player is one setting away), and a fast-forward time per podcast, handy for skipping ads.
 - **[Made for foldables and big screens](docs/foldables.md):** two-pane layouts for playlists and episode details, show notes beside the player, and tabletop mode.
 - **[Backups that work both ways](docs/backups.md):** the regular backup includes everything Castlist adds, and a separate export lets you go back to the official app.
 - **Installs next to the official app:** its own name, package name (`io.github.dcdude71.castlist`) and icon, so you can run both and tell them apart. The two apps do not share data.
@@ -31,7 +31,7 @@ Castlist is built to follow AntennaPod, not to drift away from it.
 
 - New features live in new files. AntennaPod's own code is touched only where a feature has to hook in, usually with a line or two, and is never reorganized, renamed or reformatted.
 - Castlist's look (name, icon, splash screen) replaces AntennaPod's through the app's own settings and resources instead of editing them.
-- Where Castlist changes how something looks or works, AntennaPod's way stays available as a setting: Player style → Classic, and Episode filter style → Basic (the default).
+- Where Castlist changes how something looks or works, AntennaPod's way stays available as a setting: Player style → AntennaPod, and Episode filter style → Basic (the default).
 
 **Your data stays compatible with the official app.**
 

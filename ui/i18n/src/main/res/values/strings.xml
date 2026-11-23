@@ -641,7 +641,9 @@
     <string name="fork_notice_title">Castlist</string>
     <string name="fork_notice_summary">Based on AntennaPod and licensed under the GNU General Public License v3. Source code: github.com/dcdude71/Castlist</string>
     <string name="fork_guide_title">Castlist guide</string>
-    <string name="fork_guide_summary">How playlists, the widget, episode filters and the other Castlist features work</string>
+    <string name="fork_guide_summary">Start here for what Castlist adds: playlists, widgets, episode filters, the player and more</string>
+    <string name="fork_documentation_title">AntennaPod documentation</string>
+    <string name="fork_documentation_summary">For everything Castlist shares with AntennaPod: subscriptions, downloads, the queue, sync and backups</string>
     <string name="fork_report_bug_message">Sorry to hear something isn’t working. This is Castlist, a modified version of AntennaPod, so please report problems on its GitHub page, not to the AntennaPod team. Check there first in case the issue has already been reported.</string>
     <string name="contributors">Contributors</string>
     <string name="contributors_summary">Everyone can help to make AntennaPod better - with code, translations or by helping users in our forum</string>
@@ -1172,8 +1174,8 @@
     <string name="player_background_blur">Blurred artwork</string>
     <string name="pref_player_tint_title">Tint controls with cover colour</string>
     <string name="pref_player_tint_summary">Play button and progress bar take a colour from the episode\'s artwork</string>
-    <string name="player_style_modern">Modern</string>
-    <string name="player_style_classic">Classic</string>
+    <string name="player_style_modern">Castlist: big controls, colours from the artwork</string>
+    <string name="player_style_classic">AntennaPod: the original layout</string>
     <string name="playlist_show_in_android_auto">Show in Android Auto</string>
     <plurals name="num_playlists">
         <item quantity="one">%d playlist</item>

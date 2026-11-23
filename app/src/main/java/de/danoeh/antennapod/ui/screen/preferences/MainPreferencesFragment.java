@@ -49,7 +49,8 @@ public class MainPreferencesFragment extends AnimatedPreferenceFragment {
         // It must also include a prominent copyright notice.
         int packageHash = getContext().getPackageName().hashCode();
         if (packageHash != 1790437538 && packageHash != -1190467065) {
-            ForkProjectSettings.setup(this, PREF_CATEGORY_PROJECT, PREF_VIEW_FORUM, PREF_CONTRIBUTE);
+            ForkProjectSettings.setup(this, PREF_CATEGORY_PROJECT, PREF_DOCUMENTATION, PREF_VIEW_FORUM,
+                    PREF_CONTRIBUTE);
         } else if (packageHash == -1190467065) {
             Preference debugNotice = new Preference(getContext());
             debugNotice.setIcon(R.drawable.ic_info_white);
