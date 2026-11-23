@@ -1,0 +1,1 @@
+Settings: the Castlist guide and AntennaPod documentation links now say what each one covers. Player style options are renamed Castlist and AntennaPod (your choice is kept); the background and tint settings only show with the Castlist player.
