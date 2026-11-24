@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -192,7 +193,7 @@ public class CarPlayerActivity extends AppCompatActivity {
         cover.setClipToOutline(true);
         cover.setBackground(rounded(ContextCompat.getColor(this, R.color.car_surface), 18, 0, 0));
 
-        findViewById(R.id.carExit).setOnClickListener(v -> finish());
+        findViewById(R.id.carExit).setOnClickListener(v -> exit());
         findViewById(R.id.carRewind).setOnClickListener(v -> PlaybackController.bindToMedia3Service(this,
                 controller -> {
                     if (controller.getCurrentMediaItem() != null) {
@@ -222,7 +223,7 @@ public class CarPlayerActivity extends AppCompatActivity {
                 if (pinnedView.getVisibility() == View.VISIBLE) {
                     showPlayer();
                 } else {
-                    finish();
+                    exit();
                 }
             }
         });
@@ -252,6 +253,11 @@ public class CarPlayerActivity extends AppCompatActivity {
             }
         });
         EventBus.getDefault().register(this);
+        CarBluetooth.cancelNotification(this);
+        CarBluetooth.getPrefs(this).registerOnSharedPreferenceChangeListener(bluetoothListener);
+        if (closeIfCarDisconnected()) {
+            return;
+        }
         loadMedia();
         if (pinnedView.getVisibility() == View.VISIBLE) {
             loadPinned();
@@ -263,6 +269,30 @@ public class CarPlayerActivity extends AppCompatActivity {
         super.onStop();
         EventBus.getDefault().unregister(this);
         unregisterReceiver(powerReceiver);
+        CarBluetooth.getPrefs(this).unregisterOnSharedPreferenceChangeListener(bluetoothListener);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+    }
+
+    private final SharedPreferences.OnSharedPreferenceChangeListener bluetoothListener =
+            (prefs, key) -> closeIfCarDisconnected();
+
+    private boolean closeIfCarDisconnected() {
+        if (getIntent().getBooleanExtra(CarBluetooth.EXTRA_FROM_BLUETOOTH, false)
+                && !CarBluetooth.isConnected(this)) {
+            finish();
+            return true;
+        }
+        return false;
+    }
+
+    private void exit() {
+        CarBluetooth.markDismissed(this);
+        finish();
     }
 
     private final BroadcastReceiver powerReceiver = new BroadcastReceiver() {

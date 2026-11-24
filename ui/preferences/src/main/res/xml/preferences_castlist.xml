@@ -52,6 +52,16 @@
                 android:title="@string/pref_car_keep_screen_on_title"/>
         <Preference
                 android:dependency="prefCarPlayer"
+                android:key="prefCarBluetooth"
+                android:title="@string/car_bluetooth_title" />
+        <SwitchPreferenceCompat
+                android:dependency="prefCarPlayer"
+                android:key="prefCarBluetoothNotification"
+                android:title="@string/car_bluetooth_notification_title"
+                android:summary="@string/car_bluetooth_notification_summary"
+                android:defaultValue="true" />
+        <Preference
+                android:dependency="prefCarPlayer"
                 android:key="prefCarShortcut"
                 android:title="@string/pref_car_shortcut_title"
                 android:summary="@string/pref_car_shortcut_summary" />

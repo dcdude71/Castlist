@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <supports-screens
@@ -300,6 +301,15 @@
             android:launchMode="singleTask"
             android:taskAffinity=""
             android:theme="@style/Theme.AntennaPod.Dark.NoTitle" />
+
+        <receiver
+            android:name=".ui.screen.car.CarBluetoothReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.bluetooth.device.action.ACL_CONNECTED" />
+                <action android:name="android.bluetooth.device.action.ACL_DISCONNECTED" />
+            </intent-filter>
+        </receiver>
 
         <activity
             android:name=".ui.screen.car.CarPinnedActivity"

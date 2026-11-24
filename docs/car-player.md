@@ -7,6 +7,8 @@ A full-screen player with big buttons, for cars without Android Auto or CarPlay.
 - In the player, tap the **car** button at the top.
 - Or add a home screen icon: Settings → Castlist features → Car player → **Add to home screen**.
 
+- Or let it open by itself when your car's Bluetooth connects (see below).
+
 Tap **✕** (or Back) to leave. The screen stays on while the car player is open; change that with **Keep screen on**.
 
 ## The screen
@@ -22,6 +24,18 @@ From top to bottom:
 - **Pinned**, to start something else.
 
 The play button, progress bar and time left take a colour from the artwork.
+
+## Opening by itself in the car
+
+Settings → Castlist features → Car player → **Open when connected to**: tick your car's Bluetooth (or several). Castlist asks for the **Nearby devices** permission the first time, so it can tell which device connected.
+
+While one of those devices is connected:
+
+- Opening Castlist (its icon, a shortcut, or tapping the player) takes you to the car player.
+- A notification, **Connected to …**, opens the car player with one tap, handy when the phone was locked or showing another app. Turn it off with **Notification when connected**.
+- Tap **✕** to use the normal player instead; Castlist won't switch back until the next time the car connects.
+
+When the car disconnects, a car player that opened this way closes and the notification goes away. Android doesn't let apps jump in front of what you're doing on their own, so the car player waits until you open Castlist or tap the notification. Playback doesn't start by itself.
 
 ## Pinned playlists and podcasts
 
@@ -49,4 +63,6 @@ Settings → Castlist features → **Car player**:
 - **Next button**: **Next episode** (default), **Next chapter** (then the next episode after the last chapter), or **Both** side by side.
 - **Pinned**: the editor described above.
 - **Keep screen on**: **Always** (default), **Only when charging** (follows the cable live: plug in and the screen stays on, unplug and it can turn off as usual), or **Never**.
+- **Open when connected to**: the car Bluetooth devices described above. Off until you pick one.
+- **Notification when connected**: on by default.
 - **Add to home screen**: a shortcut that opens the car player.

@@ -60,6 +60,7 @@ import de.danoeh.antennapod.ui.common.NavigationToolbarActivity;
 import de.danoeh.antennapod.ui.common.ThemeSwitcher;
 import de.danoeh.antennapod.ui.common.ThemeUtils;
 import de.danoeh.antennapod.ui.discovery.DiscoveryFragment;
+import de.danoeh.antennapod.ui.screen.car.CarBluetooth;
 import de.danoeh.antennapod.ui.screen.FavoritesFragment;
 import de.danoeh.antennapod.ui.screen.AddFeedFragment;
 import de.danoeh.antennapod.ui.screen.AllEpisodesFragment;
@@ -588,6 +589,7 @@ public class MainActivity extends CastEnabledActivity implements NavigationToolb
         EventBus.getDefault().register(this);
         getOnBackPressedDispatcher().addCallback(this, openDefaultPageBackPressedCallback);
         getOnBackPressedDispatcher().addCallback(this, bottomSheetBackPressedCallback);
+        CarBluetooth.openIfConnected(this);
     }
 
     @Override
