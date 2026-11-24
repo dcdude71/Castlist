@@ -1,0 +1,1 @@
+Fixed: with the screen off, playback could stay silent when moving to the next episode or playlist until you paused and played again. Smart playlists now leave out archived podcasts. Car player: Keep screen on can be Always, Only when charging, or Never.
