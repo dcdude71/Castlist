@@ -249,7 +249,9 @@ public final class PlaylistReader {
     private static Map<Long, Feed> loadFeeds() {
         Map<Long, Feed> feeds = new HashMap<>();
         for (Feed feed : DBReader.getFeedList()) {
-            feeds.put(feed.getId(), feed);
+            if (feed.getState() == Feed.STATE_SUBSCRIBED) {
+                feeds.put(feed.getId(), feed);
+            }
         }
         return feeds;
     }

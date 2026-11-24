@@ -413,6 +413,27 @@ public class PlaylistDatabaseTest {
         EpisodeFilterPreferences.init(context);
     }
 
+    @Test
+    public void testArchivedPodcastsAreLeftOut() throws Exception {
+        Feed kept = createFeed(2);
+        Feed archived = createFeed(2);
+        long id = PlaylistWriter.createPlaylist(new Playlist("Mix")).get();
+        PlaylistWriter.addRule(new PlaylistRule(id, kept.getId())).get();
+        PlaylistWriter.addRule(new PlaylistRule(id, archived.getId())).get();
+        assertEquals(4, PlaylistReader.getEpisodes(id).size());
+
+        PodDBAdapter adapter = PodDBAdapter.getInstance();
+        adapter.open();
+        adapter.setFeedState(archived.getId(), Feed.STATE_ARCHIVED);
+        adapter.close();
+        List<FeedItem> episodes = PlaylistReader.getEpisodes(id);
+        assertEquals(2, episodes.size());
+        for (FeedItem episode : episodes) {
+            assertEquals(kept.getId(), episode.getFeedId());
+        }
+        assertTrue(PlaylistReader.getPodcastEpisodes(archived.getId(), Collections.emptySet()).isEmpty());
+    }
+
     private static long itemId(Feed feed, int index) {
         return feed.getItems().get(index).getId();
     }
