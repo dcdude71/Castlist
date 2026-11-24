@@ -890,6 +890,7 @@ public class Media3PlaybackService extends MediaLibraryService {
         }
         int startPosition = playbackStartPosition;
         boolean fromPlaylist = PlaylistPlayback.isActive(this);
+        NextEpisodeWakeLock wakeLock = NextEpisodeWakeLock.acquire(this);
         queueLoaderDisposable = Maybe.fromCallable(() -> {
             FeedItem nextItem = PlaylistPlayback.getNextItem(this, item, wasSkipped);
             boolean hasNext = nextItem != null && nextItem.getMedia() != null;
@@ -902,6 +903,7 @@ public class Media3PlaybackService extends MediaLibraryService {
         })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doFinally(wakeLock::release)
                 .subscribe(
                         pair -> {
                             final FeedMedia nextMedia = pair.first;

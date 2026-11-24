@@ -66,6 +66,7 @@ public class ExoPlayerUtils {
                 .setMediaSourceFactory(new ApMediaSourceFactory(context, simpleCache))
                 .setSeekParameters(SeekParameters.EXACT)
                 .setHandleAudioBecomingNoisy(UserPreferences.isPauseOnHeadsetDisconnect())
+                .setWakeMode(C.WAKE_MODE_NETWORK)
                 .build();
     }
 
