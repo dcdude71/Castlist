@@ -1,0 +1,1 @@
+New car player for cars without Android Auto: big buttons, Next with Undo, and up to 8 pinned playlists or podcasts (switch at the top). Open it from the car button in the player or a home screen icon. Pin from Settings, Castlist features, Car player, or from a playlist's or podcast's menu. Next button can skip chapters.
