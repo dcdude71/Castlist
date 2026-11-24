@@ -30,6 +30,14 @@
     </item>
 
     <item
+        android:id="@+id/car_player_item"
+        android:icon="@drawable/ic_car"
+        android:title="@string/car_player_title"
+        android:visible="false"
+        custom:showAsAction="always">
+    </item>
+
+    <item
         android:id="@+id/audio_controls"
         android:title="@string/audio_controls"
         android:visible="false"

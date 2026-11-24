@@ -226,6 +226,13 @@ public final class PlaylistReader {
         return getEpisodes(rules, excludedOldestIds, loadFeeds(), downloadedOnly);
     }
 
+    @NonNull
+    public static List<FeedItem> getPodcastEpisodes(long feedId, @NonNull Set<Long> excludedIds) {
+        PlaylistRule rule = new PlaylistRule(0, 0, feedId, PlaylistRule.ALL_EPISODES, PlaylistRule.PickFrom.OLDEST,
+                PlaylistRule.PlayOrder.OLDEST_FIRST, PlaylistRule.MIN_PRIORITY, 0);
+        return getEpisodes(Collections.singletonList(rule), excludedIds, loadFeeds(), false);
+    }
+
     public static int countEpisodesHiddenByFilters(long playlistId) {
         List<PlaylistRule> rules = getRules(playlistId);
         if (rules.isEmpty()) {

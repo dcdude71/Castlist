@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/carRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/car_background">
+
+    <LinearLayout
+        android:id="@+id/carPlayerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/carSource"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textColor="@color/car_text"
+                android:textSize="19sp"
+                android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/carExit"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:background="@drawable/bg_car_button"
+                android:contentDescription="@string/car_exit"
+                android:src="@drawable/ic_car_close"
+                app:tint="@color/car_text" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/carCover"
+                android:layout_width="112dp"
+                android:layout_height="112dp"
+                android:importantForAccessibility="no"
+                android:scaleType="centerCrop" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/carPodcast"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/car_text_secondary"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/carTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:textColor="@color/car_text"
+                    android:textSize="26sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/carProgress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="6dp"
+            android:layout_marginTop="20dp"
+            android:max="1000"
+            android:progressBackgroundTint="@color/car_surface" />
+
+        <TextView
+            android:id="@+id/carTimeLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:id="@+id/carUndo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_car_undo"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="20dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="8dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/carUndoText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/car_skipped"
+                    android:textColor="@color/car_background"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/carUndoButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="64dp"
+                    android:background="@drawable/bg_car_undo_button"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:paddingStart="24dp"
+                    android:paddingEnd="24dp"
+                    android:text="@string/undo"
+                    android:textColor="@color/car_text"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/carRewind"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="6dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_car_button"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_car_rewind"
+                    app:tint="@color/car_text" />
+
+                <TextView
+                    android:id="@+id/carRewindLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/car_text"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/carForward"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="6dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_car_button"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_car_forward"
+                    app:tint="@color/car_text" />
+
+                <TextView
+                    android:id="@+id/carForwardLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/car_text"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/carPlay"
+            android:layout_width="match_parent"
+            android:layout_height="170dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_car_accent"
+            android:contentDescription="@string/play_label"
+            android:padding="40dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_car_pause"
+            app:tint="@color/car_on_accent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="84dp"
+            android:layout_marginTop="12dp"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/carNextChapter"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="12dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_car_button"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_car_next_chapter"
+                    app:tint="@color/car_text" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:text="@string/car_next_chapter"
+                    android:textColor="@color/car_text"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/carNextEpisode"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/bg_car_button"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_car_next_episode"
+                    app:tint="@color/car_text" />
+
+                <TextView
+                    android:id="@+id/carNextEpisodeLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:text="@string/car_next_episode"
+                    android:textColor="@color/car_text"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/carPinned"
+            android:layout_width="match_parent"
+            android:layout_height="84dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_car_button"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_car_pin"
+                app:tint="@color/car_text" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="@string/car_pinned"
+                android:textColor="@color/car_text"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/carPinnedView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="68dp"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/carPinnedBack"
+                android:layout_width="68dp"
+                android:layout_height="68dp"
+                android:background="@drawable/bg_car_button"
+                android:contentDescription="@string/car_back_to_player"
+                android:src="@drawable/ic_car_back"
+                app:tint="@color/car_text" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_car_button"
+                android:orientation="horizontal"
+                android:padding="5dp">
+
+                <TextView
+                    android:id="@+id/carTabPlaylists"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/playlists_label"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/carTabPodcasts"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/car_podcasts"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/carTiles"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="14dp"
+            android:layout_weight="1"
+            android:orientation="vertical" />
+
+    </LinearLayout>
+
+</FrameLayout>

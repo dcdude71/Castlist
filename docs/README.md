@@ -8,6 +8,7 @@ How to use the features that Castlist adds on top of [AntennaPod](https://antenn
 | [Home screen](home-screen.md) | The playlists widget, playlist icons and app shortcuts |
 | [Watch](watch.md) | The Wear OS companion app (experimental, unsupported): start playlists and control playback from the watch, and how to install it |
 | [Episode filter](episode-filter.md) | Basic and Advanced filters: which episodes download, and which ones playlists use |
+| [Car player](car-player.md) | Big buttons for driving, pinned playlists and podcasts |
 | [The player and skip forward](player.md) | The Castlist player, its cover-coloured backgrounds, and skip forward time per podcast |
 | [Foldables and big screens](foldables.md) | Two-pane layouts, tabletop mode, episode details beside the list |
 | [Backups](backups.md) | Backing up, restoring, and switching back to the official app |

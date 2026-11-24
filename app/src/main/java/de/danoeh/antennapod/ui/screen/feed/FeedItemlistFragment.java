@@ -54,6 +54,7 @@ import de.danoeh.antennapod.ui.episodeslist.EpisodeMultiSelectActionHandler;
 import de.danoeh.antennapod.ui.episodeslist.FeedItemMenuHandler;
 import de.danoeh.antennapod.ui.episodeslist.MoreContentListFooterUtil;
 import de.danoeh.antennapod.ui.glide.FastBlurTransformation;
+import de.danoeh.antennapod.ui.screen.car.CarPins;
 import de.danoeh.antennapod.ui.screen.SearchFragment;
 import de.danoeh.antennapod.ui.screen.download.DownloadLogDetailsDialog;
 import de.danoeh.antennapod.ui.screen.download.DownloadLogFragment;
@@ -282,6 +283,7 @@ public class FeedItemlistFragment extends Fragment implements AdapterView.OnItem
             viewBinding.toolbar.getMenu().findItem(R.id.sort_items).setVisible(false);
         }
         FeedMenuHandler.onPrepareMenu(viewBinding.toolbar.getMenu(), Collections.singletonList(feed));
+        CarPins.prepareFeedMenu(getContext(), viewBinding.toolbar.getMenu(), feed);
     }
 
     @Override
@@ -322,6 +324,10 @@ public class FeedItemlistFragment extends Fragment implements AdapterView.OnItem
             return true;
         } else if (item.getItemId() == R.id.remove_archive_feed || item.getItemId() == R.id.remove_restore_feed) {
             new RemoveFeedDialogClose(Collections.singletonList(feed)).show(getParentFragmentManager(), null);
+            return true;
+        } else if (item.getItemId() == R.id.car_pin_feed) {
+            CarPins.togglePodcast(getContext(), feed.getId());
+            item.setChecked(!item.isChecked());
             return true;
         } else if (item.getItemId() == R.id.action_search) {
             ((MainActivity) getActivity()).loadChildFragment(SearchFragment.newInstance(feed.getId(), feed.getTitle()));

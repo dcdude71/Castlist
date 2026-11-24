@@ -293,6 +293,20 @@
         </activity>
 
         <activity
+            android:name=".ui.screen.car.CarPlayerActivity"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize"
+            android:exported="false"
+            android:label="@string/car_player_title"
+            android:launchMode="singleTask"
+            android:taskAffinity=""
+            android:theme="@style/Theme.AntennaPod.Dark.NoTitle" />
+
+        <activity
+            android:name=".ui.screen.car.CarPinnedActivity"
+            android:exported="false"
+            android:label="@string/car_pinned" />
+
+        <activity
             android:name=".ui.screen.playlist.PlaylistWidgetConfigActivity"
             android:exported="true"
             android:label="@string/playlist_widget_settings_title">

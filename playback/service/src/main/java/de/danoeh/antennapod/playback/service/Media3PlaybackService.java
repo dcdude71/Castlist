@@ -889,7 +889,7 @@ public class Media3PlaybackService extends MediaLibraryService {
             return;
         }
         int startPosition = playbackStartPosition;
-        boolean fromPlaylist = PlaylistPlayback.getActivePlaylist(this) != PlaylistPlayback.NO_PLAYLIST;
+        boolean fromPlaylist = PlaylistPlayback.isActive(this);
         queueLoaderDisposable = Maybe.fromCallable(() -> {
             FeedItem nextItem = PlaylistPlayback.getNextItem(this, item, wasSkipped);
             boolean hasNext = nextItem != null && nextItem.getMedia() != null;

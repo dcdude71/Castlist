@@ -24,6 +24,7 @@ public final class PlaylistPlayback {
     public static final long NO_PLAYLIST = 0;
     private static final String PREF_NAME = "PlaylistPlayback";
     private static final String PREF_ACTIVE_PLAYLIST = "activePlaylist";
+    private static final String PREF_ACTIVE_PODCAST = "activePodcast";
 
     private static final Set<Long> skippedItemIds = Collections.synchronizedSet(new HashSet<>());
 
@@ -32,12 +33,32 @@ public final class PlaylistPlayback {
 
     public static void start(@NonNull Context context, long playlistId) {
         skippedItemIds.clear();
-        getPrefs(context).edit().putLong(PREF_ACTIVE_PLAYLIST, playlistId).apply();
+        getPrefs(context).edit().putLong(PREF_ACTIVE_PLAYLIST, playlistId)
+                .putLong(PREF_ACTIVE_PODCAST, NO_PLAYLIST).apply();
+    }
+
+    public static void startPodcast(@NonNull Context context, long feedId) {
+        skippedItemIds.clear();
+        getPrefs(context).edit().putLong(PREF_ACTIVE_PLAYLIST, NO_PLAYLIST)
+                .putLong(PREF_ACTIVE_PODCAST, feedId).apply();
     }
 
     public static void stop(@NonNull Context context) {
         skippedItemIds.clear();
-        getPrefs(context).edit().putLong(PREF_ACTIVE_PLAYLIST, NO_PLAYLIST).apply();
+        getPrefs(context).edit().putLong(PREF_ACTIVE_PLAYLIST, NO_PLAYLIST)
+                .putLong(PREF_ACTIVE_PODCAST, NO_PLAYLIST).apply();
+    }
+
+    public static long getActivePodcast(@NonNull Context context) {
+        return getPrefs(context).getLong(PREF_ACTIVE_PODCAST, NO_PLAYLIST);
+    }
+
+    public static boolean isActive(@NonNull Context context) {
+        return getActivePlaylist(context) != NO_PLAYLIST || getActivePodcast(context) != NO_PLAYLIST;
+    }
+
+    public static void unskip(long itemId) {
+        skippedItemIds.remove(itemId);
     }
 
     public static long getActivePlaylist(@NonNull Context context) {
@@ -45,6 +66,14 @@ public final class PlaylistPlayback {
     }
 
     public static boolean isPlayingFromPlaylist(@NonNull Context context, @NonNull FeedItem item) {
+        long podcastId = getActivePodcast(context);
+        if (podcastId != NO_PLAYLIST) {
+            if (item.getFeedId() == podcastId) {
+                return true;
+            }
+            stop(context);
+            return false;
+        }
         long playlistId = getActivePlaylist(context);
         if (playlistId == NO_PLAYLIST) {
             return false;
@@ -68,6 +97,10 @@ public final class PlaylistPlayback {
 
     @Nullable
     public static FeedItem getNextItem(@NonNull Context context, @NonNull FeedItem current, boolean skipped) {
+        long podcastId = getActivePodcast(context);
+        if (podcastId != NO_PLAYLIST) {
+            return getNextPodcastItem(context, podcastId, current, skipped);
+        }
         long playlistId = getActivePlaylist(context);
         if (playlistId == NO_PLAYLIST) {
             return DBReader.getNextInQueue(current);
@@ -97,6 +130,24 @@ public final class PlaylistPlayback {
             EventBus.getDefault().post(new PlaylistTransitionEvent(null));
         }
         AutoDownloadManager.getInstance().autodownloadUndownloadedItems(context);
+        return next;
+    }
+
+    @Nullable
+    private static FeedItem getNextPodcastItem(@NonNull Context context, long podcastId,
+                                               @NonNull FeedItem current, boolean skipped) {
+        if (skipped) {
+            skippedItemIds.add(current.getId());
+        }
+        Set<Long> skippedIds;
+        synchronized (skippedItemIds) {
+            skippedIds = new HashSet<>(skippedItemIds);
+        }
+        FeedItem next = getNextEpisode(PlaylistReader.getPodcastEpisodes(podcastId, skippedIds),
+                current.getId(), skippedIds);
+        if (next == null) {
+            stop(context);
+        }
         return next;
     }
 

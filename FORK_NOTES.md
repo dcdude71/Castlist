@@ -108,3 +108,12 @@ Settings → Castlist features → Player style: "Castlist" (value `modern`, def
 
 ## Working preferences
 - Ask design questions as a short numbered list with a recommendation per item, and let the answer come back as plain text (not a multiple-choice picker); answers often add nuance the options don't cover.
+
+## Car player
+Added in v0.11.0 (designed 2026-11-24, mockups: https://claude.ai/artifact/Co8rGq4LJWVQvQE1at4oc7) for cars without Android Auto. User guide: `docs/car-player.md`.
+- Code: `app/.../ui/screen/car/` (all fork-only). `CarPlayerActivity` (own task, dark, keep screen on, player view + pinned view in one layout `car_player_activity.xml`, tiles `car_tile.xml`), `CarPinnedActivity` (Settings editor), `CarPins` (pins in SharedPreferences `CarPlayer`: CSV of ids, last tab, auto-fill on first use from the first 8 playlists and the 8 most recently played subscribed podcasts), `CarPlayerPreferences`, `CarPlayerSettings`.
+- Entry points: car icon in the player toolbar (`mediaplayer.xml` + 2 hooks in `AudioPlayerFragment`), pinned shortcut from Settings, "Pin to car player" in `feedlist.xml` (hooks in `FeedItemlistFragment`) and `playlist_episodes.xml`.
+- Settings: "Car player" category in `preferences_castlist.xml` (`prefCarPlayer`, `prefCarNextButton` episode/chapter/both, `prefCarPinned`, `prefCarKeepScreenOn`, `prefCarShortcut`).
+- Podcast tiles use a podcast playback mode in `PlaylistPlayback` (`startPodcast`, pref `activePodcast`, cleared by `start`/`stop`): the next episode is the oldest unplayed one of that podcast (`PlaylistReader.getPodcastEpisodes`, an "All, oldest, oldest first" rule, so episode filters apply); stops at the end, no toast. `Media3PlaybackService.startNextInQueue` checks `PlaylistPlayback.isActive`.
+- Next chapter sends the session command `next_chapter` (upstream; it moves to the next episode after the last chapter). Next episode = `seekToNextMediaItem`; Undo restores the playlist/podcast mode and restarts the previous episode at its position.
+- Not done (v0.11.1): open the car player automatically when chosen Bluetooth devices connect.

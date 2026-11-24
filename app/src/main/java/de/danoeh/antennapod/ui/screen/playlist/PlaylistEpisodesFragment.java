@@ -54,6 +54,8 @@ import de.danoeh.antennapod.storage.database.PlaylistReader;
 import de.danoeh.antennapod.storage.database.PlaylistWriter;
 import de.danoeh.antennapod.ui.common.ConfirmationDialog;
 import de.danoeh.antennapod.ui.common.PlaylistTime;
+import de.danoeh.antennapod.ui.screen.car.CarPins;
+import de.danoeh.antennapod.ui.screen.car.CarPlayerPreferences;
 import de.danoeh.antennapod.ui.episodeslist.EpisodeItemViewHolder;
 import de.danoeh.antennapod.ui.episodeslist.EpisodesListFragment;
 import de.danoeh.antennapod.ui.swipeactions.ManualPlaylistSwipeActions;
@@ -162,6 +164,10 @@ public class PlaylistEpisodesFragment extends EpisodesListFragment
                 item.setChecked(current.isShowInAndroidAuto());
                 PlaylistWriter.updatePlaylist(current);
             }
+            return true;
+        } else if (itemId == R.id.playlist_car_pin) {
+            CarPins.togglePlaylist(requireContext(), playlistId);
+            item.setChecked(!item.isChecked());
             return true;
         } else if (itemId == R.id.playlist_add_to_home_screen) {
             Playlist current = playlist;
@@ -417,6 +423,10 @@ public class PlaylistEpisodesFragment extends EpisodesListFragment
             toolbar.getMenu().findItem(R.id.playlist_keep_played).setChecked(current.isKeepPlayed());
             toolbar.getMenu().findItem(R.id.playlist_auto_download).setChecked(current.isAutoDownload());
             toolbar.getMenu().findItem(R.id.playlist_android_auto).setChecked(current.isShowInAndroidAuto());
+            toolbar.getMenu().findItem(R.id.playlist_car_pin)
+                    .setVisible(CarPlayerPreferences.isEnabled(requireContext()));
+            toolbar.getMenu().findItem(R.id.playlist_car_pin).setChecked(CarPins.isPlaylistPinned(requireContext(),
+                    playlistId));
             toolbar.getMenu().findItem(R.id.playlist_downloaded_only).setChecked(current.isDownloadedOnly());
             emptyView.setMessage(current.isDownloadedOnly()
                     ? R.string.playlist_episodes_empty_downloaded_message

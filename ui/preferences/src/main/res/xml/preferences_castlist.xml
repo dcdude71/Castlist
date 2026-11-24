@@ -25,6 +25,37 @@
                 android:defaultValue="true" />
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="@string/car_player_title">
+        <SwitchPreferenceCompat
+                android:key="prefCarPlayer"
+                android:title="@string/car_player_title"
+                android:summary="@string/car_player_summary"
+                android:defaultValue="true" />
+        <de.danoeh.antennapod.ui.preferences.preference.MaterialListPreference
+                android:defaultValue="episode"
+                android:dependency="prefCarPlayer"
+                android:entries="@array/car_next_button_titles"
+                android:entryValues="@array/car_next_button_values"
+                android:key="prefCarNextButton"
+                app:useSimpleSummaryProvider="true"
+                android:title="@string/pref_car_next_title"/>
+        <Preference
+                android:dependency="prefCarPlayer"
+                android:key="prefCarPinned"
+                android:title="@string/car_pinned" />
+        <SwitchPreferenceCompat
+                android:dependency="prefCarPlayer"
+                android:key="prefCarKeepScreenOn"
+                android:title="@string/pref_car_keep_screen_on_title"
+                android:summary="@string/pref_car_keep_screen_on_summary"
+                android:defaultValue="true" />
+        <Preference
+                android:dependency="prefCarPlayer"
+                android:key="prefCarShortcut"
+                android:title="@string/pref_car_shortcut_title"
+                android:summary="@string/pref_car_shortcut_summary" />
+    </PreferenceCategory>
+
     <PreferenceCategory android:title="@string/playlists_label">
         <de.danoeh.antennapod.ui.preferences.preference.MaterialListPreference
                 android:defaultValue="next_playlist"

@@ -36,4 +36,14 @@
         <item>basic</item>
         <item>advanced</item>
     </string-array>
+    <string-array name="car_next_button_titles">
+        <item>@string/pref_car_next_episode</item>
+        <item>@string/pref_car_next_chapter</item>
+        <item>@string/pref_car_next_both</item>
+    </string-array>
+    <string-array name="car_next_button_values" translatable="false">
+        <item>episode</item>
+        <item>chapter</item>
+        <item>both</item>
+    </string-array>
 </resources>

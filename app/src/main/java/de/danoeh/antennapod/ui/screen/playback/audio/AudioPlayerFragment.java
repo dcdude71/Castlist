@@ -39,6 +39,8 @@ import de.danoeh.antennapod.ui.appstartintent.OnlineFeedviewActivityStarter;
 import de.danoeh.antennapod.ui.chapters.ChapterUtils;
 import de.danoeh.antennapod.ui.episodes.PlaybackSpeedUtils;
 import de.danoeh.antennapod.ui.episodes.TimeSpeedConverter;
+import de.danoeh.antennapod.ui.screen.car.CarPlayerActivity;
+import de.danoeh.antennapod.ui.screen.car.CarPlayerPreferences;
 import de.danoeh.antennapod.ui.screen.playback.MediaPlayerErrorDialog;
 import de.danoeh.antennapod.ui.screen.playback.PlayButton;
 import de.danoeh.antennapod.ui.screen.playback.SleepTimerDialog;
@@ -552,6 +554,7 @@ public class AudioPlayerFragment extends Fragment implements
 
     public void setupOptionsMenu() {
         toolbar.getMenu().findItem(R.id.open_feed_item).setVisible(true);
+        toolbar.getMenu().findItem(R.id.car_player_item).setVisible(CarPlayerPreferences.isEnabled(requireContext()));
         FeedItemMenuHandler.onPrepareMenu(toolbar.getMenu(),
                 Collections.singletonList(currentMedia.getItem()));
         ((CastEnabledActivity) getActivity()).requestCastButton(toolbar.getMenu());
@@ -575,6 +578,9 @@ public class AudioPlayerFragment extends Fragment implements
         } else if (itemId == R.id.transcript_item) {
             new TranscriptDialogFragment().show(
                     getActivity().getSupportFragmentManager(), TranscriptDialogFragment.TAG);
+            return true;
+        } else if (itemId == R.id.car_player_item) {
+            startActivity(CarPlayerActivity.getIntent(requireContext()));
             return true;
         } else if (itemId == R.id.open_feed_item) {
             if (feedItem != null) {

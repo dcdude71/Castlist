@@ -22,6 +22,15 @@
     </item>
 
     <item
+        android:id="@+id/car_pin_feed"
+        android:checkable="true"
+        android:menuCategory="container"
+        android:title="@string/car_pin_menu"
+        android:visible="false"
+        custom:showAsAction="never">
+    </item>
+
+    <item
         android:id="@+id/action_search"
         android:icon="@drawable/ic_search"
         custom:showAsAction="always"

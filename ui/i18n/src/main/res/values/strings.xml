@@ -1165,7 +1165,7 @@
     <string name="player_next_label">Next</string>
     <string name="pref_player_style_title">Player style</string>
     <string name="castlist_settings_title">Castlist features</string>
-    <string name="castlist_settings_summary">Player, playlists, episode filter style</string>
+    <string name="castlist_settings_summary">Player, car player, playlists, episode filter style</string>
     <string name="castlist_settings_player">Player</string>
     <string name="pref_player_background_title">Player background</string>
     <string name="player_background_theme">Theme colour</string>
@@ -1295,4 +1295,46 @@
     <string name="playlist_sort_date_new_old">Date, newest first</string>
     <string name="playlist_sort_duration_short_long">Duration, shortest first</string>
     <string name="playlist_sort_duration_long_short">Duration, longest first</string>
+    <string name="car_player_title">Car player</string>
+    <string name="car_player_summary">Big buttons for driving, opened from the car button in the player</string>
+    <string name="car_player_disabled">The car player is turned off. Turn it on in Settings, Castlist features.</string>
+    <string name="car_exit">Close car player</string>
+    <string name="car_next_episode">Next episode</string>
+    <string name="car_next_chapter">Next chapter</string>
+    <string name="car_pinned">Pinned</string>
+    <string name="car_back_to_player">Back to player</string>
+    <string name="car_podcasts">Podcasts</string>
+    <string name="car_skipped">Skipped to next episode</string>
+    <string name="car_playing">Playing</string>
+    <string name="car_seconds">%1$ds</string>
+    <string name="car_source">%1$s · %2$s</string>
+    <plurals name="car_episodes_left">
+        <item quantity="one">%d left</item>
+        <item quantity="other">%d left</item>
+    </plurals>
+    <plurals name="car_num_podcasts">
+        <item quantity="one">%d podcast</item>
+        <item quantity="other">%d podcasts</item>
+    </plurals>
+    <string name="car_nothing_playing">Nothing playing</string>
+    <string name="car_podcast_nothing">No unplayed episodes in this podcast</string>
+    <string name="car_pinned_hint">Drag to set the order in the car</string>
+    <string name="car_pinned_count">%1$d of %2$d</string>
+    <string name="car_pins_full">All 8 slots are used. Remove one to add another.</string>
+    <string name="car_pins_full_menu">All 8 car player slots are used. Remove one in Settings, Castlist features, Pinned.</string>
+    <string name="car_add_playlist">Add playlist</string>
+    <string name="car_add_podcast">Add podcast</string>
+    <string name="car_nothing_to_add">Everything is already pinned.</string>
+    <string name="car_unpin">Unpin</string>
+    <string name="car_pinned_toast">Pinned to the car player</string>
+    <string name="car_unpinned_toast">Removed from the car player</string>
+    <string name="car_pin_menu">Pin to car player</string>
+    <string name="pref_car_next_title">Next button</string>
+    <string name="pref_car_next_episode">Next episode</string>
+    <string name="pref_car_next_chapter">Next chapter, then the next episode after the last one</string>
+    <string name="pref_car_next_both">Both: Next chapter and Next episode</string>
+    <string name="pref_car_keep_screen_on_title">Keep screen on</string>
+    <string name="pref_car_keep_screen_on_summary">While the car player is open</string>
+    <string name="pref_car_shortcut_title">Add to home screen</string>
+    <string name="pref_car_shortcut_summary">A shortcut that opens the car player</string>
 </resources>

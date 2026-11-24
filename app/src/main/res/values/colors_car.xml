@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="car_background">#0E0F12</color>
+    <color name="car_surface">#2C3038</color>
+    <color name="car_outline">#646B78</color>
+    <color name="car_text">#F3F4F6</color>
+    <color name="car_text_secondary">#C9CDD4</color>
+    <color name="car_accent_default">#F2A541</color>
+    <color name="car_on_accent">#0E0F12</color>
+</resources>

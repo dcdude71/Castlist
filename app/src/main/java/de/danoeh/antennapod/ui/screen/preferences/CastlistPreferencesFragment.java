@@ -10,6 +10,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import de.danoeh.antennapod.R;
 import de.danoeh.antennapod.storage.preferences.EpisodeFilterPreferences;
 import de.danoeh.antennapod.ui.preferences.screen.AnimatedPreferenceFragment;
+import de.danoeh.antennapod.ui.screen.car.CarPlayerSettings;
 
 public class CastlistPreferencesFragment extends AnimatedPreferenceFragment {
     private static final String PREF_PLAYER_STYLE = "prefPlayerStyle";
@@ -26,6 +27,7 @@ public class CastlistPreferencesFragment extends AnimatedPreferenceFragment {
                 return true;
             });
         }
+        CarPlayerSettings.setup(this);
         Preference filterStyle = findPreference(EpisodeFilterPreferences.PREF_EPISODE_FILTER_STYLE);
         if (filterStyle != null) {
             filterStyle.setOnPreferenceChangeListener((preference, newValue) -> {
@@ -58,5 +60,6 @@ public class CastlistPreferencesFragment extends AnimatedPreferenceFragment {
     public void onStart() {
         super.onStart();
         ((PreferenceActivity) getActivity()).getSupportActionBar().setTitle(R.string.castlist_settings_title);
+        CarPlayerSettings.updateSummary(this);
     }
 }
