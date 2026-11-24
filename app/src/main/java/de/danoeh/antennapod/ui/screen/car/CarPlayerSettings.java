@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
@@ -23,6 +24,10 @@ public final class CarPlayerSettings {
     }
 
     public static void setup(@NonNull PreferenceFragmentCompat fragment) {
+        ListPreference screenOn = fragment.findPreference(CarPlayerPreferences.PREF_SCREEN_ON);
+        if (screenOn != null && screenOn.getValue() == null) {
+            screenOn.setValue(CarPlayerPreferences.getScreenOn(fragment.requireContext()));
+        }
         Preference pinned = fragment.findPreference(PREF_PINNED);
         if (pinned != null) {
             pinned.setOnPreferenceClickListener(preference -> {

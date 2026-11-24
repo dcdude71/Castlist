@@ -43,12 +43,13 @@
                 android:dependency="prefCarPlayer"
                 android:key="prefCarPinned"
                 android:title="@string/car_pinned" />
-        <SwitchPreferenceCompat
+        <de.danoeh.antennapod.ui.preferences.preference.MaterialListPreference
                 android:dependency="prefCarPlayer"
-                android:key="prefCarKeepScreenOn"
-                android:title="@string/pref_car_keep_screen_on_title"
-                android:summary="@string/pref_car_keep_screen_on_summary"
-                android:defaultValue="true" />
+                android:entries="@array/car_screen_on_titles"
+                android:entryValues="@array/car_screen_on_values"
+                android:key="prefCarScreenOn"
+                app:useSimpleSummaryProvider="true"
+                android:title="@string/pref_car_keep_screen_on_title"/>
         <Preference
                 android:dependency="prefCarPlayer"
                 android:key="prefCarShortcut"

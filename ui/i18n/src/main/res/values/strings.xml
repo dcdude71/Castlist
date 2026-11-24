@@ -1334,7 +1334,9 @@
     <string name="pref_car_next_chapter">Next chapter, then the next episode after the last one</string>
     <string name="pref_car_next_both">Both: Next chapter and Next episode</string>
     <string name="pref_car_keep_screen_on_title">Keep screen on</string>
-    <string name="pref_car_keep_screen_on_summary">While the car player is open</string>
+    <string name="pref_car_screen_on_always">Always, while the car player is open</string>
+    <string name="pref_car_screen_on_charging">Only when charging</string>
+    <string name="pref_car_screen_on_never">Never</string>
     <string name="pref_car_shortcut_title">Add to home screen</string>
     <string name="pref_car_shortcut_summary">A shortcut that opens the car player</string>
 </resources>

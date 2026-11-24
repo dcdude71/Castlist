@@ -7,7 +7,7 @@ A full-screen player with big buttons, for cars without Android Auto or CarPlay.
 - In the player, tap the **car** button at the top.
 - Or add a home screen icon: Settings → Castlist features → Car player → **Add to home screen**.
 
-Tap **✕** (or Back) to leave. The screen stays on while the car player is open; turn that off with **Keep screen on**.
+Tap **✕** (or Back) to leave. The screen stays on while the car player is open; change that with **Keep screen on**.
 
 ## The screen
 
@@ -48,5 +48,5 @@ Settings → Castlist features → **Car player**:
 - **Car player**: on by default. Off hides the car button and the menu entries.
 - **Next button**: **Next episode** (default), **Next chapter** (then the next episode after the last chapter), or **Both** side by side.
 - **Pinned**: the editor described above.
-- **Keep screen on**: on by default.
+- **Keep screen on**: **Always** (default), **Only when charging** (follows the cable live: plug in and the screen stays on, unplug and it can turn off as usual), or **Never**.
 - **Add to home screen**: a shortcut that opens the car player.

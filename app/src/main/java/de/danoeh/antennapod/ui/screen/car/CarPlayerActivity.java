@@ -1,13 +1,16 @@
 package de.danoeh.antennapod.ui.screen.car;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.RippleDrawable;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -228,11 +231,9 @@ public class CarPlayerActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if (CarPlayerPreferences.isKeepScreenOn(this)) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        } else {
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        }
+        Intent battery = ContextCompat.registerReceiver(this, powerReceiver,
+                new IntentFilter(Intent.ACTION_BATTERY_CHANGED), ContextCompat.RECEIVER_NOT_EXPORTED);
+        updateScreenOn(battery);
         String next = CarPlayerPreferences.getNextButton(this);
         nextChapter.setVisibility(CarPlayerPreferences.NEXT_BOTH.equals(next) ? View.VISIBLE : View.GONE);
         boolean chapterOnly = CarPlayerPreferences.NEXT_CHAPTER.equals(next);
@@ -261,6 +262,25 @@ public class CarPlayerActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
+        unregisterReceiver(powerReceiver);
+    }
+
+    private final BroadcastReceiver powerReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            updateScreenOn(intent);
+        }
+    };
+
+    private void updateScreenOn(@Nullable Intent battery) {
+        String mode = CarPlayerPreferences.getScreenOn(this);
+        boolean charging = battery != null && battery.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0) != 0;
+        if (CarPlayerPreferences.SCREEN_ON_ALWAYS.equals(mode)
+                || (CarPlayerPreferences.SCREEN_ON_CHARGING.equals(mode) && charging)) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        } else {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
     }
 
     @Override
