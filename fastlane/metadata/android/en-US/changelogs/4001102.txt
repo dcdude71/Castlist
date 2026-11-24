@@ -1,0 +1,1 @@
+Car player can open by itself in the car: pick your car's Bluetooth in Settings, Castlist features, Car player, Open when connected to. While it's connected, opening Castlist goes to the car player, and a notification opens it with one tap. It closes again when the car disconnects.
