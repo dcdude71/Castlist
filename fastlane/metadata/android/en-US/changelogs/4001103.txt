@@ -1,0 +1,1 @@
+Fixes the player sometimes stopping between two episodes, showing the next episode paused: Castlist now retries it by itself. Episode changes and player errors are also kept in a small log on the phone to help track down such problems.
