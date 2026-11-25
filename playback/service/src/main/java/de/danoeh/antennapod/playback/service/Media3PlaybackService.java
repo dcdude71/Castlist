@@ -3,6 +3,8 @@ package de.danoeh.antennapod.playback.service;
 import android.content.Intent;
 import android.media.audiofx.LoudnessEnhancer;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.webkit.URLUtil;
@@ -106,6 +108,8 @@ public class Media3PlaybackService extends MediaLibraryService {
     @Nullable
     private LoudnessEnhancer loudnessEnhancer = null;
     private float volumeAdaptionFactor = 1.0f;
+    private int autoAdvanceRetries = -1;
+    private final Handler retryHandler = new Handler(Looper.getMainLooper());
 
     @UnstableApi
     @Override
@@ -395,6 +399,10 @@ public class Media3PlaybackService extends MediaLibraryService {
 
         @Override
         public void onPlayWhenReadyChanged(boolean playWhenReady, int reason) {
+            if (!playWhenReady && autoAdvanceRetries >= 0) {
+                PlaybackDiagnostics.log(Media3PlaybackService.this,
+                        "Paused while starting next episode, reason " + reason);
+            }
             PlaybackServiceInterface.isPlaying = !Util.shouldShowPlayButton(player);
             updatePlaybackPreferences();
         }
@@ -402,6 +410,10 @@ public class Media3PlaybackService extends MediaLibraryService {
         @Override
         public void onIsPlayingChanged(boolean isPlaying) {
             PlaybackServiceInterface.isPlaying = !Util.shouldShowPlayButton(player);
+            if (isPlaying && autoAdvanceRetries >= 0) {
+                PlaybackDiagnostics.log(Media3PlaybackService.this, "Next episode playing");
+                autoAdvanceRetries = -1;
+            }
             if (isPlaying && player.getCurrentMediaItem() != null) {
                 playedMediaId = player.getCurrentMediaItem().mediaId;
                 saveCurrentPosition();
@@ -465,6 +477,15 @@ public class Media3PlaybackService extends MediaLibraryService {
 
         @Override
         public void onPlayerError(@NonNull PlaybackException error) {
+            PlaybackDiagnostics.log(Media3PlaybackService.this, "Player error " + error.getErrorCodeName()
+                    + " on media " + (player.getCurrentMediaItem() != null
+                    ? player.getCurrentMediaItem().mediaId : "none")
+                    + " at " + player.getCurrentPosition() + " ms", error);
+            if (autoAdvanceRetries >= 0 && autoAdvanceRetries < 2) {
+                retryAutoAdvance();
+                return;
+            }
+            autoAdvanceRetries = -1;
             PlaybackServiceInterface.isPlaying = false;
             EventBus.getDefault().post(new PlayerErrorEvent(
                     ExoPlayerUtils.translateErrorReason(error, Media3PlaybackService.this)));
@@ -481,6 +502,7 @@ public class Media3PlaybackService extends MediaLibraryService {
     @UnstableApi
     @Override
     public void onDestroy() {
+        retryHandler.removeCallbacksAndMessages(null);
         PlaybackServiceInterface.isPlaying = false;
         cancelPositionObserver();
         if (sleepTimer != null) {
@@ -890,6 +912,8 @@ public class Media3PlaybackService extends MediaLibraryService {
         }
         int startPosition = playbackStartPosition;
         boolean fromPlaylist = PlaylistPlayback.isActive(this);
+        PlaybackDiagnostics.log(this, "Episode " + item.getId() + (ended ? " ended" : " skipped")
+                + (fromPlaylist ? ", playlist mode" : ""));
         NextEpisodeWakeLock wakeLock = NextEpisodeWakeLock.acquire(this);
         queueLoaderDisposable = Maybe.fromCallable(() -> {
             FeedItem nextItem = PlaylistPlayback.getNextItem(this, item, wasSkipped);
@@ -909,8 +933,13 @@ public class Media3PlaybackService extends MediaLibraryService {
                             final FeedMedia nextMedia = pair.first;
                             final MediaItem nextMediaItem = pair.second;
                             if (player == null || confirmStreamingIfNeeded(nextMedia)) {
+                                PlaybackDiagnostics.log(this, "Next episode " + nextMedia.getItemId()
+                                        + " needs streaming confirmation");
                                 return;
                             }
+                            PlaybackDiagnostics.log(this, "Starting next episode " + nextMedia.getItemId()
+                                    + (nextMedia.localFileAvailable() ? " (downloaded)" : " (streaming)"));
+                            autoAdvanceRetries = UserPreferences.isFollowQueue() ? 0 : -1;
                             switchToPlayable(nextMedia);
                             player.setPlayWhenReady(UserPreferences.isFollowQueue());
                             player.setMediaItem(nextMediaItem, SkipUtils.skipIntroIfNecessary(this, nextMedia));
@@ -932,8 +961,9 @@ public class Media3PlaybackService extends MediaLibraryService {
                                         }
                                     }, error -> Log.e(TAG, "Failed to load chapters", error));
                         },
-                        error -> Log.e(TAG, "Failed to load next queue item", error),
+                        error -> PlaybackDiagnostics.log(this, "Failed to load next queue item", error),
                         () -> {
+                            PlaybackDiagnostics.log(this, "No next episode, stopping");
                             currentPlayable = null;
                             player.stop();
                             player.clearMediaItems();
@@ -945,6 +975,20 @@ public class Media3PlaybackService extends MediaLibraryService {
                                 EventBus.getDefault().post(new MessageEvent(getString(R.string.no_following_in_queue)));
                             }
                         });
+    }
+
+    private void retryAutoAdvance() {
+        autoAdvanceRetries++;
+        NextEpisodeWakeLock wakeLock = NextEpisodeWakeLock.acquire(this);
+        retryHandler.postDelayed(() -> {
+            wakeLock.release();
+            if (player == null || autoAdvanceRetries < 0 || player.getPlaybackState() != Player.STATE_IDLE) {
+                return;
+            }
+            PlaybackDiagnostics.log(this, "Retrying next episode, attempt " + autoAdvanceRetries);
+            player.prepare();
+            player.play();
+        }, 2000);
     }
 
     @UnstableApi
